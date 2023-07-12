@@ -1,6 +1,6 @@
 "use strict"
 
-import { dbPool, mysql } from "../config/db.js";
+import { GetConnection, Format } from "../config/db.js";
 
 
 /*
@@ -60,7 +60,7 @@ export class QuestStorage
     // 모든 Quest 기본 정보를 db에서 가져온다.
     async loadQuestList(){
         console.log("loadQuestList")
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
 
         let retVal = { success: false, quests:[] };
 
@@ -79,17 +79,17 @@ export class QuestStorage
 
     async questDeleteNCreate( userId:number, deleteQuestId:number, createQuestIndex:number, createQuestType:number )
     {
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success:false,msg:"" };
         try{
             const sql1 = "DELETE FROM user_quest WHERE id = ? AND owner = ?;"
             const sql1a = [ deleteQuestId, userId ]
-            const sql1s = mysql.format( sql1, sql1a );
+            const sql1s = Format( sql1, sql1a );
             console.log( sql1s );
 
             const sql2 = "INSERT INTO user_quest ( quest_index, quest_type, owner ) values ( ?, ?, ? );";
             const sql2a = [ createQuestIndex, createQuestType, userId]
-            const sql2s = mysql.format( sql2, sql2a);
+            const sql2s = Format( sql2, sql2a);
 
             console.log( sql2s );
 
@@ -120,17 +120,17 @@ export class QuestStorage
     // rewardValue : 아이템의 갯수, 소모 아이템등의 갯수가 존재하는 아이템의 경우 사용 defalut = 1
     async rewardItem( userId:number, questId:number, questIndex:number, fulfillValue:number, rewardValue:number, rewardSubtype:number )
     {
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success:false, msg:"" };
         try{
             const sql1 = "UPDATE user_quest SET complete = 1 WHERE  id = ? AND complete = 0 AND owner = ? AND quest_index = ? AND value >= ?;";
             const sql1a = [ questId, userId, questIndex, fulfillValue ];
-            const sql1s = mysql.format( sql1, sql1a );
+            const sql1s = Format( sql1, sql1a );
             console.log( sql1s );
 
             const sql2 = "INSERT INTO item_table (item_index, owner) values (?,?);";
             const sql2a = [rewardSubtype, userId]
-            const sql2s = mysql.format( sql2, sql2a);
+            const sql2s = Format( sql2, sql2a);
 
             console.log( sql2s );
 
@@ -160,18 +160,18 @@ export class QuestStorage
     }
     async rewardMoney( userId:number, questId:number, questIndex:number, fulfillValue:number, rewardValue:number )
     {
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
 
         let retVal = { success:false, msg:"" };
         try{
             const sql1 = "UPDATE user_quest SET complete = 1 WHERE  id = ? AND complete = 0 AND owner = ? AND quest_index = ? AND value >= ?;";
             const sql1a = [ questId, userId, questIndex, fulfillValue ];
-            const sql1s = mysql.format( sql1, sql1a );
+            const sql1s = Format( sql1, sql1a );
             console.log( sql1s );
 
             const sql2a = [ rewardValue, userId ];
             const sql2 = "UPDATE user SET money = money + ? WHERE id = ?;";
-            const sql2s = mysql.format( sql2, sql2a);
+            const sql2s = Format( sql2, sql2a);
 
             console.log( sql2s );
 
@@ -201,17 +201,17 @@ export class QuestStorage
     }
     async rewardDiamond( userId:number, questId:number, questIndex:number, fulfillValue:number, rewardValue:number )
     {
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success:false , msg:""};
         try{
             const sql1 = "UPDATE user_quest SET complete = 1 WHERE  id = ? AND complete = 0 AND owner = ? AND quest_index = ? AND value >= ?;";
             const sql1a = [ questId, userId, questIndex, fulfillValue ];
-            const sql1s = mysql.format( sql1, sql1a );
+            const sql1s = Format( sql1, sql1a );
             console.log( sql1s );
 
             const sql2a = [ rewardValue, userId ];
             const sql2 = "UPDATE user SET diamond = diamond + ? WHERE id = ?;";
-            const sql2s = mysql.format( sql2, sql2a);
+            const sql2s = Format( sql2, sql2a);
 
             console.log( sql2s );
 
@@ -239,7 +239,7 @@ export class QuestStorage
         return retVal;
     }
     async setUserQuestValue( userId:number, fulfillType:number, fulfillValue:number ){
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
 
         try{
             // await conn.query("UPDATE user_quest SET value = value + ? WHERE owner = ? AND quest_index=?;", 
@@ -257,7 +257,7 @@ export class QuestStorage
     }
     async addUserQuestValue( userId:number, fulfillType:number, addValue:number ){
 
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
 
         try{
             // await conn.query("UPDATE user_quest SET value = value + ? WHERE owner = ? AND quest_index=?;", 
@@ -275,7 +275,7 @@ export class QuestStorage
     }
 
     async getUserQuestInfo( userId:number, questType:number ){
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
 
         let retVal = { success: false, quests:[] };
 
@@ -293,52 +293,12 @@ export class QuestStorage
         }
         return retVal;
     }
-    // async getUserQuestInfo( userId ){
-    //     const conn = await dbPool.getConnection();
-
-    //     let retVal = { success: false, quests:[] };
-
-    //     try{
-    //         const [row] = await conn.query("SELECT * FROM user_quest WHERE owner = ?;", userId );;
-    //         retVal.success = true;
-    //         retVal.quests = row;
-    //     }catch(err)
-    //     {
-    //         console.log(err);
-    //     }finally{
-    //         conn.release();
-    //     }
-    //     return retVal;
-    // }
-
-    // async addUserQuestValue( questId, userId, addValue )
-    // {
-    //     const conn = await dbPool.getConnection();        
-    //     let retVal = { success: false };
-        
-
-
-    //     try{
-    //         const [result] = await conn.query("UPDATE user_quest SET value = value + ? WHERE id = ? AND owner = ?;", 
-    //                         addValue, questId, userId );
-
-    //         if( result.affectedRows > 0){
-    //             retVal.success = true;
-    //         }
-
-    //     }catch(err)
-    //     {
-    //         console.log(err);
-    //     }finally{
-    //         conn.release();
-    //     }
-    //     return retVal;
-    // }
+    
 
     // 만료된 일일/주간 퀘스트 RESET
     async resetRepeatQuestInfo( questId:number, userId:number, expireDate:any )
     {
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
 
         let retVal = { success: false };
 
@@ -360,7 +320,7 @@ export class QuestStorage
     {
         console.log( "QuestStorage.createUserQuestAll");
 
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         
         try{
             const nowDate = new Date();

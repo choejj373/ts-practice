@@ -11,14 +11,14 @@ const TOKEN_INVALID = -2;
 
 const authUtil = {
     checkToken : async ( req:CustomRequest, res:Response, next:NextFunction )=>{
-        let token = req.cookies.token;
+        let accessToken = req.cookies.token;
         if( !token ){
             // return res.json( util.fail( CODE.BAD_REQUEST, MSG.EMPTY_TOKEN));
             console.log("not found token")
             return res.json( {success:false, msg:"token not found"} )
         }
 
-        const user = await token.verify( token );
+        const user : any = await token.verify( accessToken );
 
         if( user == TOKEN_EXPIRED ){
             // return res.json( util.fail( CODE.UNAUTHORIZED, MSG.EXPIRED_TOKEN));

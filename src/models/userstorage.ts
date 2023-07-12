@@ -1,6 +1,6 @@
 "use strict";
 
-import  { dbPool, mysql }  from  "../config/db.js";
+import  { GetConnection, Format }  from  "../config/db.js";
 
 //use function for mysql module
 // function getConnection(callback){
@@ -40,7 +40,7 @@ export class UserStorage{
     }
     // 5분마다 1씩 충전되는 battleCoin에 대한 처리 : 유저 정보를 가져가거나 사용전 호출 필요
     async updateBattleCoin( user_id:number ){
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
 
         try{
             const [row] : any = await conn.query("SELECT battle_coin, update_time FROM user WHERE id = ?;", [user_id] );
@@ -109,7 +109,7 @@ export class UserStorage{
 
     async deleteTradeDailyStore( userId : number, tradeId : number )
     {
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
 
         try{
             conn.query("delete from trade_daily_store where id = ? AND owner = ?;", 
@@ -122,7 +122,7 @@ export class UserStorage{
         }
     }
     async getTradeDailyStore( user_id : number ){
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal : any;
 
         try{
@@ -142,7 +142,7 @@ export class UserStorage{
 
         // await UserStorage.updateBattleCoin( id );
 
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = null;
 
         try{
@@ -161,7 +161,7 @@ export class UserStorage{
 
         await this.updateBattleCoin( id );
 
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal;
 
         try{
@@ -179,19 +179,19 @@ export class UserStorage{
         
         console.log( "UserStorage.save");
 
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = {success:false, userId:0};;
         try{
 
 
             const sql1 = "INSERT INTO user( name ) VALUES (?);";
             const sql1a = [ accountInfo.name ];
-            const sql1s = mysql.format( sql1, sql1a);
-            console.log( sql1 );
+            const sql1s = Format( sql1, sql1a);
+            console.log( sql1s );
 
             const sql2 = "INSERT INTO account(id, name, psword, salt, user_id) VALUES(?, ?, ?, ?, LAST_INSERT_ID());";
             const sql2a = [accountInfo.id,accountInfo.name,hashedpassword, salt];
-            const sql2s = mysql.format( sql2, sql2a );
+            const sql2s = Format( sql2, sql2a );
             console.log( sql2s );
 
             await conn.beginTransaction();
@@ -227,7 +227,7 @@ export class UserStorage{
     };
 
     async getItems( user_id:number ){
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success: false, items:[]};
         try{
             const result:any = await conn.query("SELECT * FROM item_table WHERE owner = ?;", [user_id] );
@@ -243,19 +243,19 @@ export class UserStorage{
         return retVal;
     };
     async sellItem( user_id:number, item_uid:number ){
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success:false };
         try{
             const sql1 = "DELETE FROM item_table WHERE item_uid = ? AND owner = ?;";
             const sql1a = [ item_uid, user_id ];
-            const sql1s = mysql.format( sql1, sql1a );
+            const sql1s = Format( sql1, sql1a );
             console.log( sql1s );
 
             //over flow check
             const price = 100;
             const sql2a = [ price, user_id ];
             const sql2 = "UPDATE user SET money = money + ? WHERE id = ?;";
-            const sql2s = mysql.format( sql2, sql2a);
+            const sql2s = Format( sql2, sql2a);
 
             console.log( sql2s );
 
@@ -282,13 +282,13 @@ export class UserStorage{
     };
 
     async isSoldOutDailyStore( user_id:number, type:number){
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success:true , msg:'sold out'};
         
         try{
             const sql1 = "SELECT * FROM trade_daily_store WHERE owner = ? and type = ?";
             const sql1a = [user_id, type]
-            const sql1s = mysql.format( sql1, sql1a );
+            const sql1s = Format( sql1, sql1a );
             console.log( sql1s );
 
             const [row]:any = await conn.query( sql1s );
@@ -306,7 +306,7 @@ export class UserStorage{
     }
 
     async getFreeDiamond( user_id:number ){
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success:false, msg:"" };
 
         try{
@@ -320,13 +320,13 @@ export class UserStorage{
             const freeDiamond = 100;
             const sql1 = "INSERT INTO trade_daily_store (owner, type, value, expire_time ) values (?,?,?,?);";
             const sql1a = [user_id, 1, freeDiamond, expireDate ]
-            const sql1s = mysql.format( sql1, sql1a );
+            const sql1s = Format( sql1, sql1a );
             console.log( sql1s );
 
             
             const sql2a = [freeDiamond, user_id]
             const sql2 = "UPDATE user SET diamond = diamond + ? WHERE id = ?;";
-            const sql2s = mysql.format( sql2, sql2a );
+            const sql2s = Format( sql2, sql2a );
 
             console.log( sql2s );
 
@@ -355,7 +355,7 @@ export class UserStorage{
     async unEquipItemSameType( userId:number, itemId:number )
     {
         console.log( "unEquipItemSameType : ", userId," ", itemId)
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         try{        
             let [row1]:any = await conn.query("SELECT item_index FROM item_table WHERE item_uid = ? ;", [itemId] );
 
@@ -385,7 +385,7 @@ export class UserStorage{
         this.unEquipItemSameType( userId, itemId );
         // 테이블 구조를 바꿀지 INDEX를 추가 할지 선택 필요 => 인덱스 추가
         // 현재 있는 item_index 를 item_type으로 사용하자 일단;
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success:false };
         try{        
             const [result]:any = await conn.query("UPDATE item_table SET equip = 1 WHERE item_uid = ? AND owner = ? ;", 
@@ -404,7 +404,7 @@ export class UserStorage{
 
     async unEquipItem( userId:number, itemId:number )
     {
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success:false };
         try{        
             const [result] :any = await conn.query("UPDATE item_table SET equip = 0 WHERE item_uid = ? AND owner = ? ;", 
@@ -422,17 +422,17 @@ export class UserStorage{
     }
 
     async buyItemByDia( user_id:number, itemType:number, price:number ){
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success:false,msg:"error" };
         try{
             const sql1 = "INSERT INTO item_table (item_index, owner) values (?,?);";
             const sql1a = [itemType, user_id]
-            const sql1s = mysql.format( sql1, sql1a );
+            const sql1s = Format( sql1, sql1a );
             console.log( sql1s );
 
             const sql2a = [price, user_id, price]
             const sql2 = "UPDATE user SET diamond = diamond - ? WHERE id = ? AND diamond >= ?;";
-            const sql2s = mysql.format( sql2, sql2a );
+            const sql2s = Format( sql2, sql2a );
 
             console.log( sql2s );
 
@@ -464,17 +464,17 @@ export class UserStorage{
     // 뭔가 지저분 그냥 sp를 호출할까? 아님 money를 일단 가져올까?
     async buyItem( user_id:number ){
 
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success:false };
         try{
             const sql1 = "INSERT INTO item_table (owner) values (?);";
-            const sql1s = mysql.format( sql1, user_id );
+            const sql1s = Format( sql1, user_id );
             console.log( sql1s );
 
             const price = 100;
             const sql2a = [price, price, user_id]
             const sql2 = "UPDATE user SET money = if( money >= ?, money - ?, money) WHERE id = ?;";
-            const sql2s = mysql.format( sql2, sql2a );
+            const sql2s = Format( sql2, sql2a );
 
             console.log( sql2s );
 
@@ -504,7 +504,7 @@ export class UserStorage{
 
         await this.updateBattleCoin( user_id );
 
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success:false };
         try{        
             const result:any = await conn.query("UPDATE user SET battle_coin = if( battle_coin >= 1,battle_coin - 1, battle_coin) WHERE id = (?);", [user_id] );
@@ -522,7 +522,7 @@ export class UserStorage{
 
     // overflow 체크 필요
     async addUserMoney( user_id:number, money:number ){
-        const conn = await dbPool.getConnection();
+        const conn = await GetConnection();
         let retVal = { success:false };
         try{        
         

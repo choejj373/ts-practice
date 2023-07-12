@@ -1,5 +1,5 @@
 import { Request } from 'express';
 
 export interface CustomRequest extends Request {
-    userId?: number | 0
+    userId?: number
 }

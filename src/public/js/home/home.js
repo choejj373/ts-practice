@@ -609,6 +609,7 @@ function getValueEncodedByPublicKey( text)
 
     var crypt = new JSEncrypt();
 
+    console.log( g_publicKey );
     // // 키 설정
     crypt.setPublicKey(g_publicKey);
 

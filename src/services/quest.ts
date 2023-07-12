@@ -23,6 +23,7 @@ export class Quest{
         this.questMap = new Map();
     }
     public loadData(){
+        console.log("Quest::loadData")
         QuestStorage.getInstance().loadQuestList()
         .then((result:any)=>{
 
@@ -230,58 +231,6 @@ export class Quest{
 
         return result;        
     }
-
-    // async getUserQuestInfo( userId )
-    // {
-    //     console.log("Quest.getUserQuestInfo : ", userId );
-
-    //     let result = await QuestStorage.getUserQuestInfo( userId );
-        
-    //     const nowDate = new Date();
-    //     const nowTime = nowDate.getTime();
-    //     const nowDay = nowDate.getDay();
-
-    //     const newDailyExpireDate = new Date( nowDate.setHours( 24,0,0,0) );
-
-    //     // sunday:0 , monday:1 ....
-    //     let remainDayToWeekend = 0;
-    //     if( nowDay > 0 ){
-    //         remainDayToWeekend = 7 - nowDay;
-    //     }
-
-    //     const newWeeklyExpireDate = new Date( nowDate.setDate( nowDate.getDate() + remainDayToWeekend )  );
-
-    //     if( result.success) {
-    //         result.quests.forEach( (element)=>{
-    //             let expireTime = new Date( element.expire_date ).getTime();
-
-    //             switch( element.quest_type ){
-    //             case 1:
-    //                 if( expireTime < nowTime ){
-                        
-    //                     element.value = 0;
-    //                     element.expire_date = moment(newDailyExpireDate).tz('Asia/Seoul').format();
-    //                     element.reward_receipt = 0;
-
-    //                     QuestStorage.resetRepeatQuestInfo( element.id, userId, newDailyExpireDate )
-    //                 }
-    //                 break;
-    //             case 2:   
-    //                 if( expireTime < nowTime ){
-                        
-    //                     element.value = 0;
-    //                     element.expire_date = moment(newWeeklyExpireDate).tz('Asia/Seoul').format();;
-    //                     element.reward_receipt = 0;
-
-    //                     QuestStorage.resetRepeatQuestInfo( element.id, userId, newWeeklyExpireDate )
-    //                 }
-    //                 break;
-    //             default:
-    //                 break;                 
-    //             }
-    //         });
-    //     }
-    //     return result;
-    // }
+  
 };
 

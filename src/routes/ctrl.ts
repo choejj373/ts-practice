@@ -61,7 +61,7 @@ const oauth2Api = async(code:any)=>{
 
 export const output = {
     home : async (req:Request, res:Response) => {
-        res.render("home/index")
+        res.render("home/index.ejs")
     },
 }
 
@@ -187,9 +187,14 @@ export const process = {
     login: async(req:CustomRequest, res:Response) => { 
         console.log( "process.login" );
         
+        console.log(  req.body.id );
+        console.log( req.body.psword );
 
         req.body.id = Secret.getInstance().getValueDecodedByPrivateKey( req.body.id );
         req.body.psword = Secret.getInstance().getValueDecodedByPrivateKey( req.body.psword );
+
+        console.log(  req.body.id );
+        console.log( req.body.psword );
 
         const user = new User( req.body );
         const response = await user.login();

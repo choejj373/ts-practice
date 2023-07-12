@@ -1,5 +1,5 @@
-//const crypto = require("crypto");
-// import JSEncrypt from 'node-jsencrypt';
+import crypto from "crypto";
+
 export class Secret{
 
     private static _instance:Secret;
@@ -47,25 +47,21 @@ export class Secret{
         // const dec = crypto.privateEncrypt(keyp, Buffer.from( SymmetricKey));
         // return dec.toString("base64");
     }
+
+
+    // https://gist.github.com/btd/915985269cd2c98a17144a4660f45a09 thx
     public getValueDecodedByPrivateKey( encodedText:string)
     {
-        // const jsEncrypt = new JSEncrypt();
+        console.log( this.PrivateKey );
+        console.log( this.PublicKey );
 
-        // console.log( this.PrivateKey ) ;
-        // jsEncrypt.setPrivateKey( this.PrivateKey );
-
-        // return jsEncrypt.decrypt( encodedText );
-        
-        // const key = crypto.createPrivateKey({
-        //     key: this.PrivateKey,
-        //     passphrase: '',
-        //     padding: crypto.constants.RSA_PKCS1_PADDING
-        // });
-
-        // const dec = crypto.privateDecrypt(key, Buffer.from(encodedText, "base64"));
-        //const dec = crypto.privateDecrypt(key, Buffer.from(encodedText));
+        const dec = crypto.privateDecrypt({
+            key: this.PrivateKey,
+            // padding:  crypto.constants.RSA_NO_PADDING
+            padding:  crypto.constants.RSA_PKCS1_PADDING
+        }, Buffer.from(encodedText, "base64"));
     
-        // return dec.toString("utf8");
+        return dec.toString("utf8");
     }
 
 }
