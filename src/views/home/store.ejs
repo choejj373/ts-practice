@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        window.onload = function(){
+            const buyBtn = document.querySelector("#buy");
+            buyBtn.addEventListener("click", buy );
+        }
+
+        function buy(){
+            const req = {
+                action: "buy",
+                index: 1
+            };
+            
+            fetch("/store", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify( {req} )
+            })
+            .then((res) => res.json()) // json() promise
+            .then((res) => {
+                console.log( res );
+                if( res.success ){
+                } else {
+                    alert( res.msg );
+                }
+            })
+        }
+    </script>
+    <title>Document</title>
+</head>
+
+<body>
+<h1> Store </h1>
+
+<input id="buy" type="button"  value="아이템 구입"><Br>
+
+<a href="/logout">logout</a>
+</body>

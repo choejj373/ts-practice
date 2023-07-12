@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/home/login.css">    
+    
+    <!-- <script type="text/javascript" src="./js/jsencrypt.min.js"></script> -->
+    <script src="/js/home/jsencrypt.min.js"></script>
+    <!-- <script type="text/javascript" src="/js/home/jsencrypt.min.js"></script> -->
+    <script type="module" src="/js/home/home.js" defer> </script>
+    <script type="module" src="/js/home/Party.js" defer> </script>
+    <script type="module" src="/js/home/Object.js" defer> </script>    
+    <script type="module" src="/js/home/Skill.js" defer> </script>    
+    <script type="module" src="/js/home/game.js" defer> </script>    
+    <script type="module" src="/js/home/command.js" defer> </script>    
+    <title>Document</title>
+</head>
+<body>
+    <!-- <div id = "loginView"  style = "display:none;width:600px; height:400px;background-color:#CF0"> -->
+    <div id = "loginView" class="login-page" style = "display:none">
+        <div class="form" >
+            <input id = "loginId" type="text" placeholder="아이디"/><br>
+            <input id = "loginPassword" type="password" placeholder="패스워드"/><br>
+            <input id = "loginBtn" type="button" value="login" /><br><br>
+
+            <input id = "guestLoginBtn" type="button" value="게스트 로그인"></input>
+            <input id = "googleLoginBtn" type="button" value="구글 로그인"></input><br>
+            <input id = "moveRegisterBtn" type="button" value="계정 생성"></input><br>
+        </div>
+    </div>
+    <!-- <div id = "registerView" style = "display:none;width:600px; height:400px;background-color:#CF0"> -->
+    <div id = "registerView" class="login-page" style = "display:none;">
+        <div class="form" >
+            <input id = "registerId" type="text" placeholder="아이디"/><br>
+            <input id = "registerName" type="text" placeholder="이름"/><br>
+            <input id = "registerPsword" type="password" placeholder="패스워드"/><br>
+            <input id = "registerPswordConfirm" type="password" placeholder="패스워드 확인"/><br>
+
+            <input id = "registerBtn" type = "button" value="Signup"></input>
+            <input id = "moveLoginBtn" type= "button" value="SignIn"></input>
+        </div>
+    </div>
+    <div id = "mainView" style = "display:none;width:600px; height:400px;background-color:#CF0">
+        <div id = "userInfo" style = "width:600px;height:25px;background-color:yellow">
+            이름<input id = "name" type="text" value="guest" style="width:50px" readonly></intput>
+            경험치<input id = "exp" type="text" value="0" style="width:50px" readonly></intput>
+            배틀코인<input id = "battlecoin" type="text" value="0" style="width:50px" readonly></intput>
+            다이아몬드<input id = "diamond" type="text" value="0" style="width:50px" readonly></intput>
+            골드<input id = "money" type="text" value="0" style="width:50px" readonly></intput> 
+    
+        </div>
+        <div id="mainStore" style = "display:none;">
+            <div style = "width:300px; height:400px; float: left; background-color:beige">
+                <p> 일일 상점</p>
+                무료 다이아몬드 100개<input id = "freeGetBtn" type = "button" value ="구매" ></input>
+            </div>
+            <div style = "width:300px; height:400px; float: left; background-color:bisque">
+                <p> 다이아몬드 상점</p>
+                <input id = "buyWeapon" type="button" value="구매"> 무기</intput><br>
+                <input id = "buyNecklace" type="button" value="구매"> 목걸이</intput><br> 
+                <input id = "buyGlove" type="button" value="구매"> 장갑</intput><br>
+                <input id = "buyArmor" type="button" value="구매"> 갑옷</intput><br>
+                <input id = "buyBelt" type="button" value="구매"> 허리띠</intput><br>
+                <input id = "buyShoes" type="button" value="구매"> 신발</intput><br>
+            </div>
+        </div>
+        <div id="mainInven" style = "display:none;">
+            <div style = "width:300px; height:400px; float: left; background-color:beige">
+                <p> 장착창</p>
+                <ul id = "equip">
+                </ul>
+            </div>
+            <div style = "width:300px; height:400px; float: left; background-color:bisque">
+                <p> 인벤토리</p>
+                <ul id = "inventory">
+                </ul><br>
+                <input id = "sellItemBtn" type="button" value="팔기"></intput>
+            </div>
+        </div>
+        <div id="mainCombat">
+            <div style = "width:100px; height:400px; float: left; background-color:beige">
+                <input id = "singlegameBtn" type="button" value="싱글 게임"></intput><br>
+                <input id = "quest" type="button" value="Quest"></intput><br>
+            </div>
+            <div id = "combatView" style = "width:500px; height:400px; float: left; background-color:bisque">
+                <input id = "startGameBtn" type="button" value="게임 시작"></intput>
+                <input id = "endGameBtn" type="button" value="게임 종료" disabled ></intput><br>
+                <ul id = "singlegameLog" style="width:450px; height:350px; overflow:auto">
+                </ul>
+            </div>
+            <div id = "questView" style = "display:none;width:500px; height:400px; float: left; background-color:bisque">
+                <input id = "dailyQuestBtn" type="button" value="일일 Quest"></intput>
+                <input id = "weeklyQuestBtn" type="button" value="주간 Quest"></intput>
+                <input id = "normalQuestBtn" type="button" value="업적 Quest"></intput><br>
+                <ul id = "questList">
+                </ul>
+            </div>
+        </div>
+        <div id = "navBottom" style = "width:600px;background-color:cyan">
+            <input id = "store" type="button" value="상점"></intput>
+            <input id = "inven" type="button" value="장비"></intput>
+            <input id = "combat" type="button" value="전투"></intput>
+            <input id = "challenge" type="button" value="도전"></intput>
+            <input id = "evolution" type = "button" value="진화"></intput>
+            <input id = "logout" type="button" value="접속종료"></intput>
+        </div>
+    </div>
+</body>
+</html>
