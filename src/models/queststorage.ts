@@ -1,6 +1,6 @@
 "use strict"
 
-import { GetConnection, Format } from "../config/db.js";
+import { GetConnection, ReleaseConnection, Format } from "../config/db.js";
 
 
 /*
@@ -72,7 +72,7 @@ export class QuestStorage
         {
             console.log(err);
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     }
@@ -113,7 +113,7 @@ export class QuestStorage
             await conn.rollback();
         } finally{
             console.log( "finally");
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;         
     }
@@ -154,7 +154,7 @@ export class QuestStorage
             await conn.rollback();
         } finally{
             console.log( "finally");
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;      
     }
@@ -195,7 +195,7 @@ export class QuestStorage
             await conn.rollback();
         } finally{
             console.log( "finally");
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;        
     }
@@ -234,7 +234,7 @@ export class QuestStorage
             await conn.rollback();
         } finally{
             console.log( "finally");
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     }
@@ -252,7 +252,7 @@ export class QuestStorage
         {
             console.log(err);
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
     }
     async addUserQuestValue( userId:number, fulfillType:number, addValue:number ){
@@ -270,7 +270,7 @@ export class QuestStorage
         {
             console.log(err);
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
     }
 
@@ -289,7 +289,7 @@ export class QuestStorage
         {
             console.log(err);
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     }
@@ -311,7 +311,7 @@ export class QuestStorage
         {
             console.log(err);
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     }
@@ -366,7 +366,7 @@ export class QuestStorage
         {
             console.log(err);
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
     }
 }

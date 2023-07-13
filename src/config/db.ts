@@ -3,9 +3,9 @@
 
 import mysql from 'mysql2/promise';
 
-let dbPool:any;
+let dbPool:mysql.Pool;
 
-export function CreatePool(){
+export function CreateDBPool(){
     dbPool = mysql.createPool({
         host:process.env.DB_HOST,
         user:process.env.DB_USER,
@@ -24,10 +24,13 @@ export function CreatePool(){
   
 }
 
-export function GetConnection() : any {
+export function GetConnection() : Promise<mysql.PoolConnection> {
    return dbPool.getConnection();
 }
 
+export function ReleaseConnection( conn : mysql.PoolConnection ) : void {
+    dbPool.releaseConnection( conn );
+}
 export function Format( sql : string, values : any) : string;
 export function Format( sql : string, values : any[]) : string
 {

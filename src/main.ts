@@ -9,7 +9,7 @@ import express from "express";
 
 import cookieParser from 'cookie-parser';
 
-import { CreatePool } from './config/db.js';
+import { CreateDBPool } from './config/db.js';
 import { Quest } from './services/quest.js'
 
 import path from "path";
@@ -47,8 +47,9 @@ app.use('/', router);
 const PORT = process.env.PORT || 3000;
 
 // DB Connectin Pool 생성
-CreatePool();
+CreateDBPool();
 
+// Quest 관련 변하지 않는 Data를 DB로 부터 Load
 Quest.getInstance().loadData();
 
 const server = app.listen(PORT, () =>{

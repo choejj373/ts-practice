@@ -1,7 +1,7 @@
 "use strict";
 
 import url from 'url';
-import axios from 'axios';
+
 import { Request, Response } from 'express';
 import { CustomRequest } from '../customType/express.d';
 
@@ -11,52 +11,8 @@ import { UserStorage } from "../models/userstorage.js";
 // import UserStorageCache from "../models/userstoragecache.js";
 import { Quest } from "../services/quest.js";
 import { Secret } from "../services/secret.js";
+import { oauth2Api , OAUTH_URL } from "../modules/google-login.js"
 
-
-const CLIENT_ID = "145681489601-h711k94pqvn4d5i1kod2u8aqa5fauo4s.apps.googleusercontent.com";
-const CLIENT_SECRET = "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"
-const AUTHORIZE_URI = "https://accounts.google.com/o/oauth2/v2/auth";
-const REDIRECT_URL = "http://localhost:3000/auth/google/callback";
-const RESPONSE_TYPE = "code";
-const SCOPE = "openid%20profile%20email";
-const ACCESS_TYPE = "offline";
-const OAUTH_URL = `${AUTHORIZE_URI}?client_id=${CLIENT_ID}&response_type=${RESPONSE_TYPE}&redirect_uri=${REDIRECT_URL}&scope=${SCOPE}&access_type=${ACCESS_TYPE}`;
-
-const getToken = async ( code:any ) => {
-    try{
-        const tokenApi = await axios.post(
-            `https://oauth2.googleapis.com/token?code=${code}&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&redirect_uri=${REDIRECT_URL}&grant_type=authorization_code`
-        );
-
-        const accessToken = tokenApi.data.access_token;
-
-        return accessToken;
-    }catch(err){
-        return err;
-    }
-};
-
-const getUserInfo = async ( accessToken:any) =>{
-    try{
-        const userInfoApi = await axios.get(
-            `https://www.googleapis.com/oauth2/v2/userinfo?alt=json`,
-            {
-                headers:{
-                    authorization: `Bearer ${accessToken}`,
-                },
-            }
-        );
-        return userInfoApi;
-    }catch( err ){
-        return err;
-    }
-}
-
-const oauth2Api = async(code:any)=>{
-    const accessToken = await getToken(code);
-    const userInfo : any = await getUserInfo(accessToken) ;
-    return userInfo.data;
-}
 
 
 export const output = {
@@ -407,7 +363,7 @@ export const process = {
 
                 Quest.getInstance().processLogin( accountInfo.user_id );
     
-                //3. res.redirect에 token을 넣어서 보내준다.
+                //3. res.redirect
                 res.redirect("/");
             }
         }

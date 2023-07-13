@@ -1,6 +1,6 @@
 "use strict";
 
-import  { GetConnection, Format }  from  "../config/db.js";
+import  { GetConnection, ReleaseConnection, Format }  from  "../config/db.js";
 
 //use function for mysql module
 // function getConnection(callback){
@@ -103,7 +103,7 @@ export class UserStorage{
         }catch( err ){
             console.log( err );
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }        
     }
 
@@ -118,7 +118,7 @@ export class UserStorage{
         }catch( err ){
             console.log( err );
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
     }
     async getTradeDailyStore( user_id : number ){
@@ -132,7 +132,7 @@ export class UserStorage{
         }catch( err ){
             console.log( err );
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     }
@@ -152,7 +152,7 @@ export class UserStorage{
         }catch( err ){
             console.log( err );
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     }
@@ -170,7 +170,7 @@ export class UserStorage{
         }catch( err ){
             console.log( err );
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     }
@@ -220,7 +220,7 @@ export class UserStorage{
             await conn.rollback();
             retVal = {success:false,userId:0};
         }finally{
-            await conn.release();
+            await ReleaseConnection( conn );;
         }
 
         return retVal;
@@ -238,7 +238,7 @@ export class UserStorage{
         {
             console.log(err);
         }finally{
-            conn.release();
+            ReleaseConnection( conn );;
         }
         return retVal;
     };
@@ -276,7 +276,7 @@ export class UserStorage{
             await conn.rollback();
         } finally{
             console.log( "finally");
-            conn.release();
+            ReleaseConnection( conn );;
         }
         return retVal;
     };
@@ -300,7 +300,7 @@ export class UserStorage{
             console.log( err );
         } finally{
             console.log( "finally");
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     }
@@ -347,7 +347,7 @@ export class UserStorage{
             await conn.rollback();
         } finally{
             console.log( "finally");
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     };
@@ -375,7 +375,7 @@ export class UserStorage{
         }catch( err ){
             console.error( err );
         }finally{
-            await conn.release();
+            ReleaseConnection( conn );
         }
     }
 
@@ -397,7 +397,7 @@ export class UserStorage{
         }catch( err ){
             console.error( err );
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     }
@@ -416,7 +416,7 @@ export class UserStorage{
         }catch( err ){
             console.error( err );
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     }
@@ -457,7 +457,7 @@ export class UserStorage{
             await conn.rollback();
         } finally{
             console.log( "finally");
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     }
@@ -495,7 +495,7 @@ export class UserStorage{
             await conn.rollback();
         } finally{
             console.log( "finally");
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     };
@@ -515,7 +515,7 @@ export class UserStorage{
         }catch( err ){
             console.error( err );
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     };
@@ -534,7 +534,7 @@ export class UserStorage{
         }catch( err ){
             console.error( err );
         }finally{
-            conn.release();
+            ReleaseConnection( conn );
         }
         return retVal;
     };

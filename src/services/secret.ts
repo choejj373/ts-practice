@@ -6,13 +6,14 @@ export class Secret{
 
     private PrivateKey: string;
     private PublicKey: string;
-    private SymmetricKey: string;
+    // private SymmetricKey: string;
 
     private constructor(){
         this.PrivateKey    = process.env.PRIVATEKEY ?? "";
         this.PublicKey     = process.env.PUBLICKEY ?? "";
-        this.SymmetricKey  = "";//crypto.randomBytes(32);
+        // this.SymmetricKey  = crypto.randomBytes(32);
     }
+
 
     public static getInstance():Secret
     {
@@ -31,20 +32,18 @@ export class Secret{
         return this.PublicKey;
     }
 
-    public getSymmetricKey()
-    {
-        return this.SymmetricKey;
-    }
+    // public getSymmetricKey()
+    // {
+    //     return this.SymmetricKey;
+    // }
 
     public getSymmetricKeyEncodedByPrivateKey()
     {
-        // const keyp = crypto.createPrivateKey({
-        //             key: this.PrivateKey,
-        //             passphrase: "",
-        //             padding: crypto.constants.RSA_PKCS1_PADDING
-        //         });    
-            
-        // const dec = crypto.privateEncrypt(keyp, Buffer.from( SymmetricKey));
+        // const dec = crypto.privateEncrypt({
+        //     key: this.PrivateKey,
+        //     padding: crypto.constants.RSA_PKCS1_PADDING
+        // }, Buffer.from( this.SymmetricKey));
+
         // return dec.toString("base64");
     }
 
@@ -52,13 +51,9 @@ export class Secret{
     // https://gist.github.com/btd/915985269cd2c98a17144a4660f45a09 thx
     public getValueDecodedByPrivateKey( encodedText:string)
     {
-        console.log( this.PrivateKey );
-        console.log( this.PublicKey );
-
         const dec = crypto.privateDecrypt({
             key: this.PrivateKey,
-            // padding:  crypto.constants.RSA_NO_PADDING
-            padding:  crypto.constants.RSA_PKCS1_PADDING
+            padding:  crypto.constants.RSA_PKCS1_PADDING// For JSEncrypt
         }, Buffer.from(encodedText, "base64"));
     
         return dec.toString("utf8");
