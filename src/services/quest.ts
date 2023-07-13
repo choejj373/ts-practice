@@ -17,8 +17,6 @@ export class Quest{
     private static _instance:Quest;
     private questMap;
 
-// 여기서 userquestinfo를 가져온다.
-// 가져오다가 expired된 quest가 있다면 갱신해주자
     private constructor(){
         this.questMap = new Map();
     }
@@ -49,55 +47,22 @@ export class Quest{
         QuestStorage.getInstance().createUserQuestAll( userId, this.questMap );
     }
 
-    // getQuestIndexByFulfillType( fulfillType )
-    // {
-    //     let result = [];
-    //     this.questList.forEach((quest)=>{
-    //         if( quest.fulfill_type == fulfillType ){
-    //             result.push( quest.id );
-    //         }
-    //     });
-    //     return result;
-    // }
-
     public getQuestInfo( questIndex:number ){
-        // let result = { 
-        //     rewardType : 0,
-        //     rewardValue : 0,
-        //     rewardSubtype : 0,
-        //     fulfill_value : 0,
-        //     next_quest : 0,
-        //     type : 0,
-        // }
-
-        // this.questList.forEach((quest)=>{
-        //     if( quest.id == questIndex ){
-        //         result.rewardType = quest.reward_type;
-        //         result.rewardValue = quest.reward_value;
-        //         result.fulfill_value = quest.fulfill_value;
-        //         result.rewardSubtype = quest.reward_subtype;
-        //         result.type = quest.type;
-        //         result.next_quest = quest.next_quest;
-        //     }
-        // });
-
         return this.questMap.get( questIndex );
     }
 
     public findQuestType( questIndex:number ){
         return this.questMap.get( questIndex );
     }
+
     // TODO 보상 지급이 완료된 후 NEXT QUEST를 넣어주고 있는데 이를 보상 지급과 함께 처리할수 있도록 해보자
     // 보상 지급전 제한을 체크 하는 쿼리도 같이 넣어주면 더 좋을것 같다.;;
     // 한번에 너무 많은 테이블을 건드리는건 아닌지 모르겠네;;;SP로 처리하는게 더 낫겠다;;;;
     public async rewardQuestReward( userId:number, questId:number, questIndex:number ){
         const quest = this.getQuestInfo( questIndex );
 
-        interface Iresponse {
-            success : boolean,
-            msg? : string
-        }
-        let response : Iresponse = { success:false, msg:"Error" };
+       
+        let response = { success:false, msg:"Error" };
 
         if( quest.reward_type == 0){
             return { success:false, msg:"Not Found Reward" }
@@ -184,6 +149,7 @@ export class Quest{
             remainDayToWeekend = 7 - nowDay;
         }
 
+        // 금주 일요일 자정
         const newWeeklyExpireDate = new Date( nowDate.setDate( nowDate.getDate() + remainDayToWeekend )  );
 
         result.quests.forEach( (element:any)=>{
@@ -214,6 +180,7 @@ export class Quest{
         const nowDate = new Date();
         const nowTime = nowDate.getTime();
 
+        // 금일 자정
         const newDailyExpireDate = new Date( nowDate.setHours( 24,0,0,0) );
 
         result.quests.forEach( (element:any)=>{

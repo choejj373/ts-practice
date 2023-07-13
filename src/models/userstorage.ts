@@ -147,7 +147,7 @@ export class UserStorage{
 
         try{
             const [row]:any= await conn.query("select * from account where account.id = ?;", [id] );
-            console.log( row );
+            // console.log( row );
             retVal = row[0];
         }catch( err ){
             console.log( err );
@@ -352,6 +352,8 @@ export class UserStorage{
         return retVal;
     };
 
+    //TODO ITEM_INDEX는 DB에서 가져오지 말고 CLIENT에서 받아서 UPDATE시에 검증하는 방식으로 바꾸자
+    //ITEM_TABLE => USER_ITEM 변경, ITEM_LIST 추가 필요
     async unEquipItemSameType( userId:number, itemId:number )
     {
         console.log( "unEquipItemSameType : ", userId," ", itemId)
@@ -472,8 +474,8 @@ export class UserStorage{
             console.log( sql1s );
 
             const price = 100;
-            const sql2a = [price, price, user_id]
-            const sql2 = "UPDATE user SET money = if( money >= ?, money - ?, money) WHERE id = ?;";
+            const sql2a = [price, user_id, price ]
+            const sql2 = "UPDATE user SET money = money - ? WHERE id = ? AND money >= ?;";
             const sql2s = Format( sql2, sql2a );
 
             console.log( sql2s );
@@ -482,7 +484,7 @@ export class UserStorage{
 
             const result:any = await conn.query( sql1s + sql2s );
 
-            if( result[0][0].affectedRows > 0 && result[0][1].changedRows > 0 ) {
+            if( result[0][0].affectedRows > 0 && result[0][1].affectedRows > 0 ) {
                 console.log( "commit");
                 await conn.commit();
                 retVal = {success:true};
@@ -507,9 +509,9 @@ export class UserStorage{
         const conn = await GetConnection();
         let retVal = { success:false };
         try{        
-            const result:any = await conn.query("UPDATE user SET battle_coin = if( battle_coin >= 1,battle_coin - 1, battle_coin) WHERE id = (?);", [user_id] );
+            const result:any = await conn.query("UPDATE user SET battle_coin = battle_coin - 1 WHERE id = (?) AND battle_coin >= 1;", [user_id] );
 
-            if( result[0].changedRows > 0 ){
+            if( result[0].affectedRows > 0 ){
                 retVal =  {success:true};
             };
         }catch( err ){
@@ -528,7 +530,7 @@ export class UserStorage{
         
             const result:any = await conn.query("UPDATE user SET money = money + ? WHERE id = ?;", [money, user_id] );
 
-            if( result[0].changedRows > 0 ){
+            if( result[0].affectedRows > 0 ){
                 retVal =  {success:true};
             };
         }catch( err ){

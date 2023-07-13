@@ -10,7 +10,7 @@ import { User } from "../models/user.js";
 import { UserStorage } from "../models/userstorage.js";
 // import UserStorageCache from "../models/userstoragecache.js";
 import { Quest } from "../services/quest.js";
-import { Secret } from "../services/secret.js";
+import { PublicKey, getValueDecodedByPrivateKey } from "../modules/secret.js";
 import { oauth2Api , OAUTH_URL } from "../modules/google-login.js"
 
 
@@ -27,13 +27,12 @@ export const process = {
         return res.json( { success:true } );
     }, 
     //대칭키는 항상 개인키로 암호화 하여 보낸다.
-    getSymmetricKey : ( req:Request, res:Response ) => {
-        const key = Secret.getInstance().getSymmetricKeyEncodedByPrivateKey();
-        return res.json( { success:true, symmeticKey: `${key}` } );
-    },
+    // getSymmetricKey : ( req:Request, res:Response ) => {
+    //     const key = Secret.getInstance().getSymmetricKeyEncodedByPrivateKey();
+    //     return res.json( { success:true, symmeticKey: `${key}` } );
+    // },
     getPublicKey : ( req:Request, res:Response ) => {
-        const publicKey = Secret.getInstance().getPublicKey();
-        return res.json( { success:true, publicKey: `${publicKey}` } );
+         return res.json( { success:true, publicKey: `${PublicKey}` } );
     },
     requireQuestReward : async ( req:CustomRequest, res:Response, )=>{
         console.log( 'process.requireQuestReward : ', req.userId );
@@ -143,21 +142,15 @@ export const process = {
     login: async(req:CustomRequest, res:Response) => { 
         console.log( "process.login" );
         
-        console.log(  req.body.id );
-        console.log( req.body.psword );
-
-        req.body.id = Secret.getInstance().getValueDecodedByPrivateKey( req.body.id );
-        req.body.psword = Secret.getInstance().getValueDecodedByPrivateKey( req.body.psword );
-
-        console.log(  req.body.id );
-        console.log( req.body.psword );
+        req.body.id = getValueDecodedByPrivateKey( req.body.id );
+        req.body.psword = getValueDecodedByPrivateKey( req.body.psword );
 
         const user = new User( req.body );
         const response = await user.login();
 
         if( response.success )
         {
-            console.log( response.accountInfo );
+            // console.log( response.accountInfo );
             const jwtToken = await token.sign( response.accountInfo );
             
             const cookieOption = {
@@ -348,7 +341,6 @@ export const process = {
             //2. token을 새로 만들어서 클라이언트에게 알려줌..
             if( accountInfo )
             {
-                console.log( accountInfo );
                 const jwtToken = await token.sign( accountInfo );
                 
                 const cookieOption = {
