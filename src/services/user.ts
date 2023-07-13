@@ -50,8 +50,6 @@ export const User = {
         console.log( result );
         if( result.success ){
             result.guestId = id;
-
-            Quest.getInstance().createUserQuestAll( result.userId );
         }
         return result;
     },
@@ -81,9 +79,6 @@ export const User = {
         const result = await UserStorage.getInstance().save( id, name, password, salt );
     
         console.log( result );
-        if( result.success){
-            Quest.getInstance().createUserQuestAll( result.userId );
-        }
         return result;
     },
    

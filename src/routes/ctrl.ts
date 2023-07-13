@@ -175,6 +175,9 @@ export const process = {
         try{
             response = await User.guestRegister();
             console.log( response );
+            if( response.success ){
+                Quest.getInstance().createUserQuestAll( response.userId );
+            }
         }
         catch( err )
         {
@@ -213,6 +216,11 @@ export const process = {
         let response;
         try{
             response = await User.register( req.body.id, req.body.name, req.body.psword );
+
+            if( response.success){
+                Quest.getInstance().createUserQuestAll( response.userId );
+            }
+    
         }
         catch( err )
         {
@@ -222,7 +230,7 @@ export const process = {
     startsinglegame : async( req:CustomRequest, res:Response)=>{
             console.log( "process.startsinglegame : ", req.userId );
             const response = await UserStorage.getInstance().startSingleGame( req.userId??0 );
-            // todo : session -> jwt 로 세션에 저장하던 임시 정보를 별도로 처리 필요
+            // todo : session -> jwt 로 세션에 저장하던 임시 정보를 별도로 처리 필요 => redis
             // req.session.isStartSingleGame = true;
             return res.json(response);
         },
