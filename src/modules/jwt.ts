@@ -1,7 +1,15 @@
 import randToken from 'rand-token';
 import jwt from 'jsonwebtoken';
-import { secretKey, options } from '../config/secretkey.js'
+// import dotenv from 'dotenv';
+// dotenv.config();
+import 'dotenv/config'
 
+const secretKey  =  process.env.JWT_SECRET??"";
+const options = {
+    // algorithm : "HS256",
+    expiresIn : "1h",
+    issuer : "choejj"
+}
 
 const TOKEN_EXPIRED = -3;
 const TOKEN_INVALID = -2;

@@ -31,8 +31,8 @@ export function GetConnection() : Promise<mysql.PoolConnection> {
 export function ReleaseConnection( conn : mysql.PoolConnection ) : void {
     dbPool.releaseConnection( conn );
 }
-export function Format( sql : string, values : any) : string;
-export function Format( sql : string, values : any[]) : string
+// export function Format( sql : string, values : any) : string;
+export function Format( sql : string, values : any[] | any) : string
 {
     return mysql.format( sql, values );
 }

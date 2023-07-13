@@ -6,7 +6,7 @@ import { Request, Response } from 'express';
 import { CustomRequest } from '../customType/express.d';
 
 import { token  } from '../modules/jwt.js';
-import { User } from "../models/user.js";
+import { User } from "../services/user.js";
 import { UserStorage } from "../models/userstorage.js";
 // import UserStorageCache from "../models/userstoragecache.js";
 import { Quest } from "../services/quest.js";
@@ -145,8 +145,8 @@ export const process = {
         req.body.id = getValueDecodedByPrivateKey( req.body.id );
         req.body.psword = getValueDecodedByPrivateKey( req.body.psword );
 
-        const user = new User( req.body );
-        const response = await user.login();
+        //const user = new User( req.body );
+        const response = await User.login( req.body.id, req.body.psword );
 
         if( response.success )
         {
@@ -171,10 +171,9 @@ export const process = {
     
     guestRegister : async( req:CustomRequest, res:Response) => {
         console.log( "process.guestRegister" );
-        const user = new User( req.body );
         let response;
         try{
-            response = await user.guestRegister();
+            response = await User.guestRegister();
             console.log( response );
         }
         catch( err )
@@ -186,10 +185,7 @@ export const process = {
     guestLogin : async( req:CustomRequest, res:Response ) => {
         console.log( "process.guestLogin" );
 
-        const user = new User( req.body );
-
-        console.log( req.body.guestId );
-        const response = await user.guestLogin( req.body.guestId );
+        const response = await User.guestLogin( req.body.guestId );
 
         if( response.success )
         {
@@ -214,10 +210,9 @@ export const process = {
     },
     register: async( req:CustomRequest, res:Response) => {
         console.log( "process.register" );
-        const user = new User( req.body );
         let response;
         try{
-            response = await user.register();
+            response = await User.register( req.body.id, req.body.name, req.body.psword );
         }
         catch( err )
         {
@@ -328,7 +323,7 @@ export const process = {
                 const password = "";
                 const salt = "";
         
-                const result = await UserStorage.getInstance().save( userInfo, password, salt );
+                const result = await UserStorage.getInstance().save( userInfo.id, userInfo.name, password, salt );
 
                 console.log( result );
 

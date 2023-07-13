@@ -1,19 +1,16 @@
 "use strict";
 
-import dotenv from "dotenv";
-dotenv.config();
-
+// import dotenv from "dotenv";
+// dotenv.config();
+import 'dotenv/config'
 
 import express from "express";
-
-
 import cookieParser from 'cookie-parser';
+import path from "path";
+
 
 import { CreateDBPool } from './config/db.js';
 import { Quest } from './services/quest.js'
-
-import path from "path";
-
 
 
 

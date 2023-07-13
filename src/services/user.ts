@@ -1,11 +1,12 @@
 "use strict"
 
+import crypto from "crypto";
 import { v4 } from 'uuid';
 
-import { UserStorage } from "./userstorage.js";
-import { Quest } from "../services/quest.js";
+import { UserStorage } from "../models/userstorage.js";
+import { Quest } from "./quest.js";
 
-import crypto from "crypto";
+
 
 
 const createSalt = () => 
@@ -34,84 +35,68 @@ const makePasswordHashed = ( salt:any, plainPassword:string ) =>
         });
     });
 
-export class User{
+export const User = {
 
-    private body:any;
-    private accountId:string;
-    constructor(body:any){
-        this.body = body;
-        this.accountId = body.id;
-    };
-    
-    async guestRegister(){
+    guestRegister : async () => {
         console.log( "User.guestRegister");
 
-        this.body.id = v4();
-        this.body.name = "guest";
-        this.accountId = this.body.id;
-
-        const guest = this.body;
-        
+        const id = v4();
+        const name = "guest";
         const password = "";
         const salt = "";
 
-        console.log( guest );
-
-        const result:any = await UserStorage.getInstance().save( guest, password, salt );
+        const result:any = await UserStorage.getInstance().save( id, name , password, salt );
 
         console.log( result );
         if( result.success ){
-            result.guestId = this.body.id;
+            result.guestId = id;
 
             Quest.getInstance().createUserQuestAll( result.userId );
         }
         return result;
-    }
-
-    async register(){
-        console.log( "User.register");
-
-        const client = this.body;
-        const { password, salt } : any= await createHashedPassword( client.psword);
-        // console.log( password );
-        console.log( client );
-        const result = await UserStorage.getInstance().save( client, password, salt );
-
-        console.log( result );
-        if( result.success){
-            Quest.getInstance().createUserQuestAll( result.userId );
-        }
-        return result;
-    };
-
-    async guestLogin( guestId:string ){
-
-        const accountInfo = await UserStorage.getInstance().getAccountInfo( guestId );
+    },
+    login : async (id : string, pwd:string ) => {
+        // const body = this.body;
+    
+        const accountInfo = await UserStorage.getInstance().getAccountInfo( id );
         // console.log( accountInfo );
-
-        if( accountInfo){
-            return { success : true, accountInfo : accountInfo };
-        }
-
-        return { success : false, msg : "존재하지 않는 아이디 입니다"}
-    }
-
-    async login(){
-        const body = this.body;
-
-        const accountInfo = await UserStorage.getInstance().getAccountInfo( this.accountId );
-        console.log( accountInfo );
-
+    
         if( accountInfo) {
-            const hashedPwd = await makePasswordHashed( accountInfo.salt, body.psword );
-            if( accountInfo.id === this.body.id && accountInfo.psword === hashedPwd){
-
+            const hashedPwd = await makePasswordHashed( accountInfo.salt, pwd );
+            if( accountInfo.id === id && accountInfo.psword === hashedPwd){
+    
                 return { success : true, accountInfo : accountInfo };
             }
             return { success : false , msg : " 비밀번호가 틀렸습니다."}
         }
         return { success : false, msg : "존재하지 않는 아이디 입니다"}
-    }   
-}; 
+    },       
 
-// module.exports = User;
+    register : async (id:string, name:string, pwd:string) => {
+        console.log( "User.register");
+    
+        const { password, salt } : any= await createHashedPassword( pwd );
+        // console.log( password );
+        // console.log( client );
+        const result = await UserStorage.getInstance().save( id, name, password, salt );
+    
+        console.log( result );
+        if( result.success){
+            Quest.getInstance().createUserQuestAll( result.userId );
+        }
+        return result;
+    },
+   
+    guestLogin : async( guestId:string ) => {
+    
+        const accountInfo = await UserStorage.getInstance().getAccountInfo( guestId );
+        // console.log( accountInfo );
+    
+        if( accountInfo){
+            return { success : true, accountInfo : accountInfo };
+        }
+    
+        return { success : false, msg : "존재하지 않는 아이디 입니다"}
+    }
+}
+

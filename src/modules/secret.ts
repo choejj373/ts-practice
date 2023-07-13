@@ -1,8 +1,7 @@
 import crypto from "crypto";
-import dotenv from 'dotenv';
-
-dotenv.config();
-
+// import dotenv from 'dotenv';
+// dotenv.config();
+import 'dotenv/config'
 
 const PrivateKey = process.env.PRIVATEKEY??"";
 export const PublicKey = process.env.PUBLICKEY??"";

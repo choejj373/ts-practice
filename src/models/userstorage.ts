@@ -175,7 +175,7 @@ export class UserStorage{
         return retVal;
     }
 
-    public async save( accountInfo:any ,hashedpassword:string, salt:string ){
+    public async save( id:string, name:string ,hashedpassword:string, salt:string ){
         
         console.log( "UserStorage.save");
 
@@ -185,12 +185,12 @@ export class UserStorage{
 
 
             const sql1 = "INSERT INTO user( name ) VALUES (?);";
-            const sql1a = [ accountInfo.name ];
+            const sql1a = [ name ];
             const sql1s = Format( sql1, sql1a);
             console.log( sql1s );
 
             const sql2 = "INSERT INTO account(id, name, psword, salt, user_id) VALUES(?, ?, ?, ?, LAST_INSERT_ID());";
-            const sql2a = [accountInfo.id,accountInfo.name,hashedpassword, salt];
+            const sql2a = [id,name,hashedpassword, salt];
             const sql2s = Format( sql2, sql2a );
             console.log( sql2s );
 
@@ -209,7 +209,7 @@ export class UserStorage{
          
             await conn.commit();
             retVal = {success:true, userId:0};
-            const [row]:any = await conn.query("SELECT user_id FROM account WHERE id = ?;", [accountInfo.id] );
+            const [row]:any = await conn.query("SELECT user_id FROM account WHERE id = ?;", [id] );
 
             if( row.length > 0 ){
                 retVal.userId = row[0].user_id;

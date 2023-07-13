@@ -1,8 +1,9 @@
 
 import axios from 'axios';
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
+// dotenv.config();
 
-dotenv.config();
+import 'dotenv/config'
 
 const CLIENT_ID = process.env.GOOGLE_ID;
 const CLIENT_SECRET = process.env.GOOGLE_SECRET;

@@ -1,6 +1,9 @@
-const winston = require('winston');
-const winstonDaily = require('winston-daily-rotate-file');
-const process = require('process');
+
+import winston from 'winston';
+import winstonDaily from 'winston-daily-rotate-file';
+import process from 'process';
+
+import 'dotenv/config'
 
 const { combine, timestamp, label, printf } = winston.format;
 
