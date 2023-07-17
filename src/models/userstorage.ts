@@ -38,6 +38,35 @@ export class UserStorage{
         //     });
         // });
     }
+    async updateNickName( userId:number, newNickName : string){
+        let result = { success:false, msg:"db error"}
+        const conn = await GetConnection();
+        //UPDATE user SET money = money + ? WHERE id = ?;
+        try{
+            console.log( userId); 
+            console.log( newNickName ); 
+
+            const query_result:any = await conn.query("update user SET name = ? where id = ?;", 
+                        [ newNickName, userId] );
+
+            console.log( query_result);
+            console.log( query_result[0]);
+
+            if( query_result[0].affectedRows > 0  ) {
+                console.log("success");
+                result = {success:true, msg:newNickName};
+            }else{
+                result = {success:false, msg:"nick name is duplicated or not found user id"};
+            }
+
+        }catch( err : any){
+            console.log( err );
+            //result.msg = err.sqlMessage;
+        }finally{
+            ReleaseConnection( conn );
+        }        
+        return result;
+    }
     // 5분마다 1씩 충전되는 battleCoin에 대한 처리 : 유저 정보를 가져가거나 사용전 호출 필요
     async updateBattleCoin( user_id:number ){
         const conn = await GetConnection();
@@ -175,12 +204,13 @@ export class UserStorage{
         return retVal;
     }
 
+    //todo 닉네임 중복시 기존 닉네임 + a 로 자동으로 변경
     public async save( id:string, name:string ,hashedpassword:string, salt:string ){
         
         console.log( "UserStorage.save");
 
         const conn = await GetConnection();
-        let retVal = {success:false, userId:0};;
+        let retVal = {success:false, userId:0, msg:""};;
         try{
 
 
@@ -189,8 +219,8 @@ export class UserStorage{
             const sql1s = Format( sql1, sql1a);
             console.log( sql1s );
 
-            const sql2 = "INSERT INTO account(id, name, psword, salt, user_id) VALUES(?, ?, ?, ?, LAST_INSERT_ID());";
-            const sql2a = [id,name,hashedpassword, salt];
+            const sql2 = "INSERT INTO account(id, psword, salt, user_id) VALUES(?, ?, ?, LAST_INSERT_ID());";
+            const sql2a = [id,hashedpassword, salt];
             const sql2s = Format( sql2, sql2a );
             console.log( sql2s );
 
@@ -201,24 +231,24 @@ export class UserStorage{
             if( result[0][0].affectedRows > 0 && result[0][1].affectedRows > 0 ) {
                 console.log( "commit");
                 await conn.commit();
-                retVal = {success:true, userId:0};
+                retVal = {success:true, userId:0, msg:""};
             }else{
                 console.log( "rollback");                            
                 await conn.rollback();
             }
          
             await conn.commit();
-            retVal = {success:true, userId:0};
+            retVal = {success:true, userId:0, msg:""};
             const [row]:any = await conn.query("SELECT user_id FROM account WHERE id = ?;", [id] );
 
             if( row.length > 0 ){
                 retVal.userId = row[0].user_id;
             }
 
-        }catch( err ){
+        }catch( err:any ){
             console.log( err );
             await conn.rollback();
-            retVal = {success:false,userId:0};
+            retVal = {success:false,userId:0,msg:err.sqlMessage};
         }finally{
             await ReleaseConnection( conn );;
         }

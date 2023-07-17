@@ -4,9 +4,9 @@ import crypto from "crypto";
 import { v4 } from 'uuid';
 
 import { UserStorage } from "../models/userstorage.js";
-import { Quest } from "./quest.js";
+// import { Quest } from "./quest.js";
 
-
+import { generateRandomString, isNameDuplicated } from "../util/string-util.js"
 
 
 const createSalt = () => 
@@ -37,17 +37,25 @@ const makePasswordHashed = ( salt:any, plainPassword:string ) =>
 
 export const User = {
 
+
+    // name이 중복 안될때까지 루프를 돌면서 재시도 한다.
     guestRegister : async () => {
         console.log( "User.guestRegister");
 
         const id = v4();
-        const name = "guest";
+        // const name = "guest";
+        
         const password = "";
         const salt = "";
-
-        const result:any = await UserStorage.getInstance().save( id, name , password, salt );
+        let name = "";
+        let result:any;
+        do{
+            name = generateRandomString(20);
+            result = await UserStorage.getInstance().save( id, name , password, salt );
+        }while( (result.success === false) && isNameDuplicated( result.msg))
 
         console.log( result );
+
         if( result.success ){
             result.guestId = id;
         }
@@ -76,7 +84,12 @@ export const User = {
         const { password, salt } : any= await createHashedPassword( pwd );
         // console.log( password );
         // console.log( client );
-        const result = await UserStorage.getInstance().save( id, name, password, salt );
+        let result = await UserStorage.getInstance().save( id, name, password, salt );
+        //only mysql
+        if( isNameDuplicated( result.msg ) )
+        {
+            console.log( "nickname is duplicated");
+        }
     
         console.log( result );
         return result;
@@ -92,6 +105,12 @@ export const User = {
         }
     
         return { success : false, msg : "존재하지 않는 아이디 입니다"}
+    },
+    changeNickName : async( userId:number, newNickName : string)=>{
+
+        const result = await UserStorage.getInstance().updateNickName( userId, newNickName );
+        console.log( result );
+        return result;
     }
 }
 

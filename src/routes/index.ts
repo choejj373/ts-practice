@@ -23,6 +23,7 @@ router.put("/user", process.login );
 router.get("/user", authUtil.checkToken,process.getuserinfo);
 router.delete("/user", authUtil.checkToken,process.logout);
 
+router.put("/user/nickname", authUtil.checkToken,process.changeNickName);
 
 router.get("/store", authUtil.checkToken, process.getTradeDailyStore);
 router.post("/store/daily", authUtil.checkToken, process.dailystore);

@@ -13,6 +13,7 @@ import { Quest } from "../services/quest.js";
 import { PublicKey, getValueDecodedByPrivateKey } from "../modules/secret.js";
 import { oauth2Api , OAUTH_URL } from "../modules/google-login.js"
 
+import { generateRandomString, isNameDuplicated } from "../util/string-util.js"
 
 
 export const output = {
@@ -33,6 +34,11 @@ export const process = {
     // },
     getPublicKey : ( req:Request, res:Response ) => {
          return res.json( { success:true, publicKey: `${PublicKey}` } );
+    },
+    changeNickName : async ( req:CustomRequest, res:Response ) => {
+        let response = await User.changeNickName( req.userId ?? 0, req.body.nickname );
+        console.log( response );
+        return res.json( response );
     },
     requireQuestReward : async ( req:CustomRequest, res:Response, )=>{
         console.log( 'process.requireQuestReward : ', req.userId );
@@ -331,7 +337,22 @@ export const process = {
                 const password = "";
                 const salt = "";
         
-                const result = await UserStorage.getInstance().save( userInfo.id, userInfo.name, password, salt );
+
+                let result = await UserStorage.getInstance().save( userInfo.id, userInfo.name, password, salt );
+                let name:string;
+                // nickname 중복 실패면 랜덤 문자열을 붙혀서 다시 시도
+                // 현재(2023,7,17) nickname의 최대 길이는 30자, 구글의 이름 최대 길이가 28이 넘으면 
+                // 무한 루프 위험
+                while( result.success === false && isNameDuplicated( result.msg ))
+                {
+                    if( userInfo.name.length < 25 )
+                    {
+                        break;
+                    }
+
+                    name = userInfo.name + "#" + generateRandomString(30 - (userInfo.name.length + 1));
+                    result = await UserStorage.getInstance().save( userInfo.id, name, password, salt );
+                }
 
                 console.log( result );
 

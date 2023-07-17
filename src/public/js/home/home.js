@@ -95,6 +95,43 @@ const registerName = document.getElementById("registerName");
 const registerPsword = document.getElementById("registerPsword");
 const registerPswordConfirm = document.getElementById("registerPswordConfirm");
 
+
+const nameTxt = document.getElementById("name");
+nameTxt.addEventListener("click", changeNickname );
+
+function changeNickname()
+{
+    const nickname = prompt("변경할 닉네임을 입력해주세요");
+    console.log( nickname );
+
+    if( nickname === "")
+        return;
+
+    fetch("/user/nickname", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify( {
+            nickname : nickname,       
+        } )
+    })
+    .then((res) => res.json()) // json() promise
+    .then((res) => {
+        console.log( res );
+        if( res.success ){
+            //TODO 화면상 닉네임을 변경해주자.
+            usernameTxt.value = res.msg;
+            
+            console.log("change nickname is success")
+            console.log(res.msg);
+        } else {
+            console.log("change nickname is fail")
+            processResponseFail( res.msg )
+        }
+    })
+}
+
 function guestLogin(){
     // guestId 가 있다면 로그인 요청
     // guestId 가 없다면 생성 요청
