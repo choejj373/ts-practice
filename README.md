@@ -8,8 +8,13 @@
         + 닉네임 변경
 
     + 소셜 기능(~ing)
-        + 친구 기능(~ing)
-        + 길드 기능(todo)
+        + 친구 기능
+            + 친구 리스트
+            + 친구 요청
+            + 친구 수락/거부
+            + 친구 삭제
+            + 친구 접속 알림(todo)
+        + 길드 기능(~ing)
         + 우편 기능(todo)
         + 쪽지 기능(todo)
 
@@ -27,26 +32,29 @@
     + 퀘스트 정보 관리(todo)
 
     + ================================================================================
-    + 세부 진행 상황 정리
+    + 현재 세부 진행 상황 정리
+    + 소셜 기능
+        + 길드 기능
+            + 길드 생성
+
+            + 길드원 리스트
+            + 길드원 초청
+            + 길드원 추방
+
+            + 길드 가입 요청
+            + 길드 가입 요청 수락/거절
+
+            + 길드원 초청 리스트
+            + 길드원 가입 요청 리스트
+            + db
+                + guild 
+                + guild invite
+                + guild request
+
+
+    + ================================================================================
+    + 기능상 나중에 한번에 구현할 목록
     + 소셜 기능
         + 친구 기능
-            + 전체 친구 리스트 : get /friend
-            + 친구 삭제 : delete /friend/:name
-
-            + 친구 요청 리스트 얻기   : get /friend/request
-            + 친구 요청              : post /friend/request
-            + 친구 요청 수락         : put /friend/request/accept
-                + 요청 유저와 요청 받은 유저 둘다 등록됨
-
-            + 친구 요청 거절        : put /friend/request/refuse
-
             + 친구 접속 알림
-                + redis pub/sub : ?
-            + db
-                + user_friend
-                    + friend_user_id 
-                    + owner non unique index( user_id )
-
-                + friend_request_list;
-                    + requested_user_id : 요청 받은 유저 - non unique index
-                    + request_user_id : request를 한 유저
+                + redis pub/sub or broker 서버 구축

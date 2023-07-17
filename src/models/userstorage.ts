@@ -231,20 +231,19 @@ export class UserStorage{
             if( result[0][0].affectedRows > 0 && result[0][1].affectedRows > 0 ) {
                 console.log( "commit");
                 await conn.commit();
-                retVal = {success:true, userId:0, msg:""};
+ 
+                const [row]:any = await conn.query("SELECT user_id FROM account WHERE id = ?;", [id] );
+                if( row.length > 0 ){
+                    retVal = {success:true, userId:0, msg:""};
+                    retVal.userId = row[0].user_id;
+                }
             }else{
                 console.log( "rollback");                            
                 await conn.rollback();
             }
          
-            await conn.commit();
-            retVal = {success:true, userId:0, msg:""};
-            const [row]:any = await conn.query("SELECT user_id FROM account WHERE id = ?;", [id] );
-
-            if( row.length > 0 ){
-                retVal.userId = row[0].user_id;
-            }
-
+ 
+ 
         }catch( err:any ){
             console.log( err );
             await conn.rollback();
