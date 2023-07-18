@@ -259,7 +259,7 @@ export class UserStorage{
         const conn = await GetConnection();
         let retVal = { success: false, items:[]};
         try{
-            const result:any = await conn.query("SELECT * FROM item_table WHERE owner = ?;", [user_id] );
+            const result:any = await conn.query("SELECT * FROM user_item WHERE owner = ?;", [user_id] );
             // console.log( result[0] );
             retVal.success = true;
             retVal.items = result[0];
@@ -275,7 +275,7 @@ export class UserStorage{
         const conn = await GetConnection();
         let retVal = { success:false };
         try{
-            const sql1 = "DELETE FROM item_table WHERE item_uid = ? AND owner = ?;";
+            const sql1 = "DELETE FROM user_item WHERE id = ? AND owner = ?;";
             const sql1a = [ item_uid, user_id ];
             const sql1s = Format( sql1, sql1a );
             console.log( sql1s );
@@ -388,14 +388,14 @@ export class UserStorage{
         console.log( "unEquipItemSameType : ", userId," ", itemId)
         const conn = await GetConnection();
         try{        
-            let [row1]:any = await conn.query("SELECT item_index FROM item_table WHERE item_uid = ? ;", [itemId] );
+            let [row1]:any = await conn.query("SELECT item_id FROM user_item WHERE id = ? ;", [itemId] );
 
             if( Array.isArray( row1 ) && row1.length > 0 )
             {
                 console.log( row1[0].item_index) ;
                 // TODO : item_uid != itemId를 하지 않으면 이어서 실행될 equpItem이 제대로 동작하지 않는다.
                 // equipItem이후 처리가 되는게 아닐까?????
-                const [row2] = await conn.query("UPDATE item_table SET equip = 0 WHERE owner = ? AND item_index = ? AND item_uid != ?;", 
+                const [row2] = await conn.query("UPDATE user_item SET equip = 0 WHERE owner = ? AND item_id = ? AND id != ?;", 
                              [userId, row1[0].item_index, itemId] );
 
             }
@@ -419,7 +419,7 @@ export class UserStorage{
         const conn = await GetConnection();
         let retVal = { success:false };
         try{        
-            const [result]:any = await conn.query("UPDATE item_table SET equip = 1 WHERE item_uid = ? AND owner = ? ;", 
+            const [result]:any = await conn.query("UPDATE user_item SET equip = 1 WHERE id = ? AND owner = ? ;", 
                         [itemId, userId] );
 
             if( result.changedRows > 0 ){
@@ -438,7 +438,7 @@ export class UserStorage{
         const conn = await GetConnection();
         let retVal = { success:false };
         try{        
-            const [result] :any = await conn.query("UPDATE item_table SET equip = 0 WHERE item_uid = ? AND owner = ? ;", 
+            const [result] :any = await conn.query("UPDATE user_item SET equip = 0 WHERE id = ? AND owner = ? ;", 
                         [itemId, userId] );
 
             if( result.changedRows > 0 ){
@@ -456,7 +456,7 @@ export class UserStorage{
         const conn = await GetConnection();
         let retVal = { success:false,msg:"error" };
         try{
-            const sql1 = "INSERT INTO item_table (item_index, owner) values (?,?);";
+            const sql1 = "INSERT INTO user_item (item_id, owner) values (?,?);";
             const sql1a = [itemType, user_id]
             const sql1s = Format( sql1, sql1a );
             console.log( sql1s );
@@ -498,7 +498,7 @@ export class UserStorage{
         const conn = await GetConnection();
         let retVal = { success:false };
         try{
-            const sql1 = "INSERT INTO item_table (owner) values (?);";
+            const sql1 = "INSERT INTO user_item (owner) values (?);";
             const sql1s = Format( sql1, user_id );
             console.log( sql1s );
 

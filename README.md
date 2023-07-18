@@ -10,33 +10,33 @@
         + 닉네임 변경
 
     + 소셜 기능
-        + 친구 기능
+        + 친구
             + 친구 리스트
             + 친구 요청/리스트
             + 친구 수락/거부
             + 친구 삭제
-            + 친구 접속 알림(todo)
-        + 길드 기능(~ing)
-        + 우편 기능(todo)
+        + 길드(~ing)
+        + 우편(todo)
 
-    + 퀘스트 기능
-        + 일일 퀘스트
-        + 주간 퀘스트
-        + 일반 퀘스트
-            + 연계 퀘스트
-        + 보상
-            + 골드, 아이템
-        + 타입
-            + 로그인, 자원 누적 소모량
+    + 게임 기능
+        + 퀘스트
+            + 일일 퀘스트
+            + 주간 퀘스트
+            + 일반 퀘스트
+                + 연계 퀘스트
+            + 보상
+                + 골드, 아이템
+            + 타입
+                + 로그인, 자원 누적 소모량
 
-    + 상점 기능(~ing)
-        + 일일 상점
-        + 일반 상점
-            + 아이템 구입/판매
+        + 상점(~ing)
+            + 일일 상점
+                + 무료 자원 구입
+            + 일반 상점
+                + 아이템 구입/판매
 
-    + 인벤토리 기능
-        + 아이템 장/탈착
-        
+        + 인벤토리
+            + 아이템 장착/탈착
 
     + 채팅 서버(todo)
     + 매칭 서버(todo)
@@ -45,41 +45,67 @@
 
     + 게임 운영 관리(todo)
     + 로그 관리(todo)
-    + 결졔 관리(todo)
+    + 결재 관리(todo)
     + 랭킹 관리(todo)
     + 쿠폰 관리(todo)
 
     + ================================================================================
     + 현재 세부 진행 상황 정리
-    + 상점 기능
-        + 트레이드 리스트를 추가
+    + 상점
+        + 클라이언트 수정/적용 필요
 
-    + 소셜 기능
-        + 길드 기능
-            + 길드 생성
+    + 소셜
+        + 길드
+            + 길드 생성         : post      /guild
+            + 길드 삭제         : delete    /guild
+            + 길드 정보         : get       /guild
+            + 전체 길드 리스트   : get      /guild/all
+            
+            + 길드원 리스트     : get /guild/member
+            + 길드원 초청       : post /guild/member/invite
+            + 길드원 추방       : delete /guild/member
+            + 길드원 등급 조정  : put /guild/member/grade
 
-            + 길드원 리스트
-            + 길드원 초청
-            + 길드원 추방
+            + 길드 가입 요청        : post /guild/request  
+            + 길드 가입 요청 리스트 : get  /guild/request
+            + 길드 가입 요청 수락   : put  /guild/request/accept 
+            + 길드 가입 요청 거절   : put  /guild/request/refuse 
 
-            + 길드 가입 요청
-            + 길드 가입 요청 수락/거절
+            + 길드원 초청           : post /guild/invite
+            + 길드원 초청 리스트     : get /guild/invite
+            + 길드원 초정 수락       : put /guild/invite/accept
+            + 길드원 초정 거절       : put /guild/invite/refuse
 
-            + 길드원 초청 리스트
-            + 길드원 가입 요청 리스트
             + db
-                + guild 
-                + guild member
-                + guild invite
-                + guild request
+                + guild         // 길드
+                    + id
+                    + name
+                    + point
+
+                + guild member  // 길드원
+                    + id
+                    + user_id
+                    + grade
+                    + point
+                
+                + guild invite  // 가입 요청
+                    + guild_id
+                    + guild_name
+                    + invite_user_id    // 초대한 유저 id
+                    + invited_user_id   // 초대 받은 유저 id
+
+                + guild request // 가입 신청
+                    + request_user_id       // 가입 신청한 유저 id
+                    + requested_guild_id    // 가입 신청 받은 길드 id
+                    + requested_guild_name  // 가입 신청 받은 길드 이름
 
 
     + ================================================================================
     + 기능상 나중에 한번에 구현할 목록
-    + 소셜 기능 : 실시간 알림 서버 구축후
-        + 친구 기능
+    + 소셜 : 실시간 알림 서버 구축후
+        + 친구
             + 친구 접속 알림
-        + 길드 기능
+        + 길드
             + 길드원 접속 알림
 
 

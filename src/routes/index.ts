@@ -4,6 +4,8 @@ import express from "express";
 
 import { output, process } from "./ctrl.js";
 import { friend } from "./friendCtrl.js"
+import { store } from  "./storeCtrl.js"
+
 import authUtil from '../middlewares/auth.js';
 
 export const router = express.Router();
@@ -26,8 +28,11 @@ router.delete("/user", authUtil.checkToken,process.logout);
 
 router.put("/user/nickname", authUtil.checkToken,process.changeNickName);
 
-router.get("/store", authUtil.checkToken, process.getTradeDailyStore);
-router.post("/store/daily", authUtil.checkToken, process.dailystore);
+router.get("/store/normal", authUtil.checkToken, store.getNormalTradeList )
+router.get("/store/daily", authUtil.checkToken, store.getDailyTradeList )
+router.get("/store", authUtil.checkToken, store.getTradeDailyStore);
+
+router.post("/store/daily", authUtil.checkToken, store.dailystore);
 router.post("/store/diamond", authUtil.checkToken, process.diamondstore);
 
 
