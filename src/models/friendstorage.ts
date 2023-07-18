@@ -62,14 +62,36 @@ export const FriendStorage ={
         }
         return retVal;        
     }, 
+    getFriendRequestList:async ( userId:number)=>{
+        const conn = await GetConnection();
+
+        let retVal = { success: false, requests:[] };
+
+        try{
+            const [row] : any = await conn.query("SELECT u.name FROM friend_request f INNER JOIN user u ON f.requested_user_id = u.id WHERE f.request_user_id = ?;", 
+                    [userId] );
+
+            retVal.success = true;
+            retVal.requests = row;
+
+            console.log( row );
+        }catch(err)
+        {
+            console.log(err);
+        }finally{
+            ReleaseConnection( conn );
+        }
+        return retVal;        
+    }, 
+       
     requestFriend:async ( userId:number, name:string)=>{
         const conn = await GetConnection();
 
         let retVal = { success:false, msg:name };
 
         try{
-            const result : any = await conn.query("INSERT INTO friend_request(request_user_id, requested_user_id ) ( SELECT ?, id FROM user WHERE name = ? );", 
-                    [userId, name] );
+            const result : any = await conn.query("INSERT INTO friend_request(request_user_id, requested_user_id ) ( SELECT ?, id FROM user WHERE name = ? AND id != ?);", 
+                    [userId, name, userId] );
 
             retVal.success = true;
             console.log( result );

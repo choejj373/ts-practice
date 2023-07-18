@@ -14,6 +14,7 @@
     <script type="module" src="/js/home/Skill.js" defer> </script>    
     <script type="module" src="/js/home/game.js" defer> </script>    
     <script type="module" src="/js/home/command.js" defer> </script>    
+    <script type="module" src="/js/home/friend.js" defer> </script>    
     <title>Document</title>
 </head>
 <body>
@@ -97,12 +98,25 @@
                 </ul>
             </div>
         </div>
+        <div id="mainFriend" style = "display:none;">
+            <div id = "friendLeftView" style = "width:300px; height:400px; float: left; background-color:beige">
+                <input id = "requestFriendBtn" type="button" value="친구 요청"></intput>
+                <ul id = "friendList" style = "width:200px; height:350px; overflow:auto">
+                </ul>
+            </div>
+            <div id = "friendRightView" style = "width:300px; height:400px; float: left; background-color:bisque">
+                <input id = "friendRequestBtn" type="button" value="보낸 요청"></intput>
+                <input id = "friendRequestedBtn" type="button" value="받은 요청"></intput>
+                <ul id = "requestList" style = "width:200px; height:350px; overflow:auto">
+                </ul>
+            </div>
+        </div>
         <div id = "navBottom" style = "width:600px;background-color:cyan">
             <input id = "store" type="button" value="상점"></intput>
             <input id = "inven" type="button" value="장비"></intput>
             <input id = "combat" type="button" value="전투"></intput>
-            <input id = "challenge" type="button" value="도전"></intput>
-            <input id = "evolution" type = "button" value="진화"></intput>
+            <input id = "friend" type="button" value="친구"></intput>
+            <input id = "guild" type = "button" value="길드"></intput>
             <input id = "logout" type="button" value="접속종료"></intput>
         </div>
     </div>

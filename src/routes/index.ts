@@ -3,6 +3,7 @@
 import express from "express";
 
 import { output, process } from "./ctrl.js";
+import { friend } from "./friendCtrl.js"
 import authUtil from '../middlewares/auth.js';
 
 export const router = express.Router();
@@ -43,3 +44,14 @@ router.put("/quest/reward", authUtil.checkToken,process.requireQuestReward );
 
 router.get('/auth/google', process.googleLogin );
 router.get('/auth/google/callback', process.googleRedirect );
+
+router.get('/friend', authUtil.checkToken, friend.getFriendList );
+
+router.delete('/friend', authUtil.checkToken, friend.deleteFriend );
+
+router.post('/friend/request', authUtil.checkToken, friend.requestFriend );
+
+router.get('/friend/request', authUtil.checkToken, friend.getFriendRequestList );
+router.get('/friend/requested', authUtil.checkToken, friend.getFriendRequestedList );
+router.put('/friend/requested/accept', authUtil.checkToken, friend.acceptFriendRequest );
+router.put('/friend/requested/refuse', authUtil.checkToken, friend.refuseFriendRequest );

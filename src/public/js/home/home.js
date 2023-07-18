@@ -21,8 +21,10 @@ const registerBtn = document.getElementById("registerBtn");
 const storeBtn = document.getElementById("store");
 const invenBtn = document.getElementById("inven");
 const combatBtn = document.getElementById("combat");
-const challengeBtn = document.getElementById("challenge");
-const evolutionBtn = document.getElementById("evolution");
+
+const guildBtn = document.getElementById("guild");
+
+
 const freeGetBtn = document.getElementById("freeGetBtn");
 
 const buyWeaponBtn = document.getElementById("buyWeapon");
@@ -84,8 +86,9 @@ storeBtn.addEventListener("click", showStore );
 invenBtn.addEventListener("click", showInven );
 combatBtn.addEventListener("click", showCombat );
 
-evolutionBtn.addEventListener("click", clearMainView );
-challengeBtn.addEventListener("click", clearMainView );
+
+guildBtn.addEventListener("click", clearMainView );
+
 
 freeGetBtn.addEventListener("click", getFreeDiamond );
 
@@ -448,6 +451,9 @@ function clearMainView()
 
     const mainCombat = document.getElementById("mainCombat");
     mainCombat.style.display = 'none' ;
+
+    const mainFriend = document.getElementById("mainFriend");
+    mainFriend.style.display = 'none' ;
 }
 
 function clearCombatRightView(){
@@ -455,6 +461,7 @@ function clearCombatRightView(){
     combatView.style.display = 'none';
     questView.style.display = 'none';
 }
+
 
 function showCombat(){
     clearMainView();   
@@ -531,7 +538,6 @@ function showStore(){
                 }
             });
         } else {
-            alert( res.msg );
             processResponseFail( res.msg )
 
         }
@@ -841,4 +847,17 @@ function startGame()
     MakeNewGame();
 
     g_gameId = setInterval( updateGameFrame, 30 );
+}
+
+
+import { getFriendList} from "./friend.js"
+const friendBtn = document.getElementById("friend");
+friendBtn.addEventListener("click", showFriend );
+
+function showFriend(){
+    clearMainView();   
+    const element = document.getElementById("mainFriend");
+    element.style.display = '' ;
+
+    getFriendList();
 }

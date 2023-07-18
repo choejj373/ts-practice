@@ -15,7 +15,12 @@ export const friend = {
         const response = await FriendStorage.deleteFriend( req.userId ?? 0, req.body.name );
         return res.json(response);
     },
-    // 친구 요청 들어온 리스트
+    // 친구 요청한 리스트
+    getFriendRequestList:async ( req:CustomRequest, res:Response )=>{
+        const response = await FriendStorage.getFriendRequestList( req.userId ?? 0 );
+        return res.json(response);
+    },
+    // 친구 요청 받은 리스크
     getFriendRequestedList:async ( req:CustomRequest, res:Response )=>{
         const response = await FriendStorage.getFriendRequestedList( req.userId ?? 0 );
         return res.json(response);
