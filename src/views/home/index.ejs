@@ -15,6 +15,7 @@
     <script type="module" src="/js/home/game.js" defer> </script>    
     <script type="module" src="/js/home/command.js" defer> </script>    
     <script type="module" src="/js/home/friend.js" defer> </script>    
+    <script type="module" src="/js/home/guild.js" > </script>    
     <title>Document</title>
 </head>
 <body>
@@ -108,6 +109,35 @@
                 <input id = "friendRequestBtn" type="button" value="보낸 요청"></intput>
                 <input id = "friendRequestedBtn" type="button" value="받은 요청"></intput>
                 <ul id = "requestList" style = "width:200px; height:350px; overflow:auto">
+                </ul>
+            </div>
+        </div>
+        <div id="mainGuild" style = "display:none;">
+            <div id = "guildLeftView" style = "width:200px; height:400px; float: left; background-color:beige">
+                <input id = "showGuildAllListBtn" type="button" value="전체 길드 리스트"></intput><br>
+                <input id = "showGuildInviteListBtn" type="button" value="길드 초청 리스트"></intput><br>
+                <input id = "requestGuildMemberBtn" type="button" value="길드 가입 요청"></intput><br>
+                <input id = "createGuildBtn" type="button" value="길드 생성"></intput><br><br>
+
+                <!-- 내 길드 정보 -->
+                <input id = "showGuildInfoBtn" type="button" value="길드 정보"></intput><br>
+                <input id = "deleteGuildBtn" type="button" value="길드 삭제"></intput><br>
+                <input id = "showGuildMemberBtn" type="button" value="길드원 리스트"></intput><br>
+                <input id = "deportGuildMemberBtn" type="button" value="길드 멤버 추방"></intput><br>
+                <input id = "leaveGuildMemberBtn" type="button" value="길드 탈퇴"></intput><br>
+                <input id = "inviteGuildMemberBtn" type="button" value="길드 초청"></intput><br>
+                <input id = "showGuildRequestListBtn" type="button" value="길드 가입 요청 리스트"></intput><br>
+
+                <!-- prompt guild name -->
+
+
+
+                <!-- <input id = "showGuildListBtn" type="button" value="길드 리스트"></intput><br> -->                
+            </div>
+        
+        
+            <div id = "guildRightView" style = "width:400px; height:400px; float: left; background-color:bisque">
+                <ul id = "guildInfoList" style = "width:200px; height:350px; overflow:auto">
                 </ul>
             </div>
         </div>

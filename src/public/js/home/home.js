@@ -22,8 +22,6 @@ const storeBtn = document.getElementById("store");
 const invenBtn = document.getElementById("inven");
 const combatBtn = document.getElementById("combat");
 
-const guildBtn = document.getElementById("guild");
-
 
 const freeGetBtn = document.getElementById("freeGetBtn");
 
@@ -86,8 +84,6 @@ storeBtn.addEventListener("click", showStore );
 invenBtn.addEventListener("click", showInven );
 combatBtn.addEventListener("click", showCombat );
 
-
-guildBtn.addEventListener("click", clearMainView );
 
 
 freeGetBtn.addEventListener("click", getFreeDiamond );
@@ -454,6 +450,10 @@ function clearMainView()
 
     const mainFriend = document.getElementById("mainFriend");
     mainFriend.style.display = 'none' ;
+
+    const mainGuild = document.getElementById("mainGuild");
+    mainGuild.style.display = 'none' ;
+
 }
 
 function clearCombatRightView(){
@@ -608,14 +608,6 @@ function showResisterView()
     registerView.style.display = '';
 }
 
-function processResponseFail( msg )
-{
-    if( msg.indexOf('token') >= 0){
-        showLoginView();
-    }else{
-        alert( msg )
-    }
-}
 
 function getUserInfo()
 {
@@ -860,4 +852,25 @@ function showFriend(){
     element.style.display = '' ;
 
     getFriendList();
+}
+
+
+const guildBtn = document.getElementById("guild");
+guildBtn.addEventListener("click", showGuild );
+
+function showGuild(){
+    clearMainView();   
+    const element = document.getElementById("mainGuild");
+    element.style.display = '' ;
+
+    //getFriendList();
+}
+
+export function processResponseFail( msg )
+{
+    if( msg.indexOf('token') > -1){
+        showLoginView();
+    }else{
+        alert( msg )
+    }
 }

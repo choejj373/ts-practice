@@ -231,12 +231,7 @@ export class UserStorage{
             if( result[0][0].affectedRows > 0 && result[0][1].affectedRows > 0 ) {
                 console.log( "commit");
                 await conn.commit();
- 
-                const [row]:any = await conn.query("SELECT user_id FROM account WHERE id = ?;", [id] );
-                if( row.length > 0 ){
-                    retVal = {success:true, userId:0, msg:""};
-                    retVal.userId = row[0].user_id;
-                }
+                retVal = {success:true, userId:result[0][0].insertId, msg:""};
             }else{
                 console.log( "rollback");                            
                 await conn.rollback();

@@ -137,7 +137,7 @@ export const FriendStorage ={
                 await conn.commit();
                 retVal = {success:true, msg:""};
             }else{
-                retVal = {success:true, msg:""};
+                retVal = {success:false, msg:""};
                 console.log( "rollback");                            
                 await conn.rollback();
             }

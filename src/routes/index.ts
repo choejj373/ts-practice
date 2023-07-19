@@ -5,6 +5,7 @@ import express from "express";
 import { output, process } from "./ctrl.js";
 import { friend } from "./friendCtrl.js"
 import { store } from  "./storeCtrl.js"
+import { guild } from  "./guildCtrl.js"
 
 import authUtil from '../middlewares/auth.js';
 
@@ -28,12 +29,12 @@ router.delete("/user", authUtil.checkToken,process.logout);
 
 router.put("/user/nickname", authUtil.checkToken,process.changeNickName);
 
+
 router.get("/store/normal", authUtil.checkToken, store.getNormalTradeList )
 router.get("/store/daily", authUtil.checkToken, store.getDailyTradeList )
 router.get("/store", authUtil.checkToken, store.getTradeDailyStore);
-
 router.post("/store/daily", authUtil.checkToken, store.dailystore);
-router.post("/store/diamond", authUtil.checkToken, process.diamondstore);
+router.post("/store/diamond", authUtil.checkToken, store.diamondstore);
 
 
 router.get("/equipment", authUtil.checkToken,process.getItemAll );
@@ -50,13 +51,31 @@ router.put("/quest/reward", authUtil.checkToken,process.requireQuestReward );
 router.get('/auth/google', process.googleLogin );
 router.get('/auth/google/callback', process.googleRedirect );
 
+
 router.get('/friend', authUtil.checkToken, friend.getFriendList );
-
 router.delete('/friend', authUtil.checkToken, friend.deleteFriend );
-
 router.post('/friend/request', authUtil.checkToken, friend.requestFriend );
-
 router.get('/friend/request', authUtil.checkToken, friend.getFriendRequestList );
 router.get('/friend/requested', authUtil.checkToken, friend.getFriendRequestedList );
 router.put('/friend/requested/accept', authUtil.checkToken, friend.acceptFriendRequest );
 router.put('/friend/requested/refuse', authUtil.checkToken, friend.refuseFriendRequest );
+
+router.post('/guild', authUtil.checkToken, guild.createGuild );
+router.delete('/guild', authUtil.checkToken, guild.deleteGuild );
+router.get('/guild/mine', authUtil.checkToken, guild.getMyGuildInfo );
+router.get('/guild/all', authUtil.checkToken, guild.getGuildList );
+router.get('/guild/member', authUtil.checkToken, guild.getGuildMemberList );
+router.delete('/guild/member', authUtil.checkToken, guild.depotGuildMember );
+router.delete('/guild/member/self', authUtil.checkToken, guild.leaveGuildMember );
+
+
+router.post('/guild/request', authUtil.checkToken, guild.requestGuildJoin );
+router.get('/guild/request', authUtil.checkToken, guild.getGuildJoinRequestList );
+router.put('/guild/request/accept', authUtil.checkToken, guild.acceptGuildJoinRequest );
+router.put('/guild/request/refuse', authUtil.checkToken, guild.refuseGuildJoinRequest );
+
+router.post('/guild/invite', authUtil.checkToken, guild.inviteGuildJoin );
+router.get('/guild/invite', authUtil.checkToken, guild.getGuildJoinInviteList );
+
+router.put('/guild/invite/accept', authUtil.checkToken, guild.acceptGuildJoinInvite );
+router.put('/guild/invite/refuse', authUtil.checkToken, guild.refuseGuildJoinInvite );

@@ -78,44 +78,8 @@ export const process = {
         return res.json(response);
     },
 
-    diamondstore: async( req:CustomRequest, res:Response)=>{
-        console.log( 'process.diamondstore : ', req.userId );
-        console.log( req.body )        ;
-
-        const price = 10;
-        let response = await UserStorage.getInstance().buyItemByDia( req.userId??0, req.body.itemType, price );
-
-        Quest.getInstance().processUseDiamond( req.userId??0, price );
-
-        return res.json(response);
-    },
-    dailystore: async(req:CustomRequest,res:Response)=>{
-        console.log( 'process.dailystore : ', req.userId );
-        console.log( req.body )        ;
-
-        let response = { success:false, msg:"" };
-
-        const result = await UserStorage.getInstance().isSoldOutDailyStore( req.userId??0, req.body.type )
-        console.log( result );
-
-        if( result.success ){
-            response.msg = result.msg;
-            return res.json(response);
-        }
-
-        switch( req.body.type )
-        {
-        case 1://무료 다이아
-            response = await UserStorage.getInstance().getFreeDiamond( req.userId??0 );
-            break;
-        case 2://골드 구입 아이템
-            break;
-        default://기타
-            break;
-        }
-
-        return res.json(response);
-    },
+    
+    
     sellItem: async(req:CustomRequest,res:Response)=>{
         console.log( 'process.sellItem : ', req.body.itemUid );
         const response = await UserStorage.getInstance().sellItem( req.userId??0, req.body.itemUid );
@@ -278,34 +242,7 @@ export const process = {
             return res.json( {success:false, msg:"not found user"})
         }
     },
-    getTradeDailyStore : async ( req:CustomRequest, res:Response )=>{
-        console.log("get process.home userId:", req.userId);
-
-        const tradeInfo = await UserStorage.getInstance().getTradeDailyStore( req.userId??0 );
-
-        console.log( tradeInfo );
-
-        const nowTime = new Date().getTime();
-
-        let response = { success:true, tradeList:<any>[] }
-
-        if( Array.isArray( tradeInfo ) && tradeInfo.length > 0 ){
-            tradeInfo.forEach( (trade:any)=>{
-                let expireTime = new Date( trade.expire_time ).getTime();
-                
-                console.log( nowTime," ", trade.expire_time );
-
-                if( expireTime > nowTime )
-                {
-                    response.tradeList.push( trade );
-                }else{
-                    UserStorage.getInstance().deleteTradeDailyStore( req.userId??0, trade.id );
-                }
-
-            })
-        }
-        return res.json( response );
-    },
+    
     googleLogin : async ( req:CustomRequest, res:Response )=>{
         console.log("googleLogin")
         // res.redirect(OAUTH_URL);
