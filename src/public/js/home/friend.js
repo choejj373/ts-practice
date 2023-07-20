@@ -1,3 +1,5 @@
+import { processResponseFail } from './home.js'
+
 
 const requestFriendBtn = document.getElementById("requestFriendBtn");
 requestFriendBtn.addEventListener("click", requestFriend );

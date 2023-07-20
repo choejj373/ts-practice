@@ -16,6 +16,11 @@
     <script type="module" src="/js/home/command.js" defer> </script>    
     <script type="module" src="/js/home/friend.js" defer> </script>    
     <script type="module" src="/js/home/guild.js" > </script>    
+    <script type="module" src="/js/home/mail.js" > </script>    
+    <script type="module" src="/js/home/inventory.js" > </script>    
+    <script type="module" src="/js/home/store.js" > </script>    
+    <script type="module" src="/js/home/login.js" > </script>    
+    <script type="module" src="/js/home/quest.js" > </script>    
     <title>Document</title>
 </head>
 <body>
@@ -83,7 +88,6 @@
         <div id="mainCombat">
             <div style = "width:100px; height:400px; float: left; background-color:beige">
                 <input id = "singlegameBtn" type="button" value="싱글 게임"></intput><br>
-                <input id = "quest" type="button" value="Quest"></intput><br>
             </div>
             <div id = "combatView" style = "width:500px; height:400px; float: left; background-color:bisque">
                 <input id = "startGameBtn" type="button" value="게임 시작"></intput>
@@ -91,7 +95,9 @@
                 <ul id = "singlegameLog" style="width:450px; height:350px; overflow:auto">
                 </ul>
             </div>
-            <div id = "questView" style = "display:none;width:500px; height:400px; float: left; background-color:bisque">
+        </div>            
+        <div id="mainQuest" style = "display:none;">            
+            <div id = "questView" style = "width:600px; height:400px; float: left; background-color:bisque">
                 <input id = "dailyQuestBtn" type="button" value="일일 Quest"></intput>
                 <input id = "weeklyQuestBtn" type="button" value="주간 Quest"></intput>
                 <input id = "normalQuestBtn" type="button" value="업적 Quest"></intput><br>
@@ -127,17 +133,28 @@
                 <input id = "leaveGuildMemberBtn" type="button" value="길드 탈퇴"></intput><br>
                 <input id = "inviteGuildMemberBtn" type="button" value="길드 초청"></intput><br>
                 <input id = "showGuildRequestListBtn" type="button" value="길드 가입 요청 리스트"></intput><br>
-
-                <!-- prompt guild name -->
-
-
-
-                <!-- <input id = "showGuildListBtn" type="button" value="길드 리스트"></intput><br> -->                
             </div>
-        
-        
             <div id = "guildRightView" style = "width:400px; height:400px; float: left; background-color:bisque">
                 <ul id = "guildInfoList" style = "width:200px; height:350px; overflow:auto">
+                </ul>
+            </div>
+        </div>
+        <div id="mainMail" style = "display:none;">
+            <div id = "mailLeftView" style = "width:200px; height:400px; float: left; background-color:beige">
+                <input id = "readMailBtn" type="button" value="우편 읽기"></intput><br>
+                <input id = "sendMailBtn" type="button" value="우편 쓰기"></intput><br>
+
+                <!-- <input id = "showGuildAllListBtn" type="button" value="전체 길드 리스트"></intput><br>
+                <input id = "showGuildInfoBtn" type="button" value="길드 정보"></intput><br>
+                <input id = "deleteGuildBtn" type="button" value="길드 삭제"></intput><br>
+                <input id = "showGuildMemberBtn" type="button" value="길드원 리스트"></intput><br>
+                <input id = "deportGuildMemberBtn" type="button" value="길드 멤버 추방"></intput><br>
+                <input id = "leaveGuildMemberBtn" type="button" value="길드 탈퇴"></intput><br>
+                <input id = "inviteGuildMemberBtn" type="button" value="길드 초청"></intput><br>
+                <input id = "showGuildRequestListBtn" type="button" value="길드 가입 요청 리스트"></intput><br> -->
+            </div>
+            <div id = "mailRightView" style = "width:400px; height:400px; float: left; background-color:bisque">
+                <ul id = "mailInfoList" style = "width:200px; height:350px; overflow:auto">
                 </ul>
             </div>
         </div>
@@ -145,8 +162,10 @@
             <input id = "store" type="button" value="상점"></intput>
             <input id = "inven" type="button" value="장비"></intput>
             <input id = "combat" type="button" value="전투"></intput>
+            <input id = "quest" type="button" value="퀘스트"></intput>
             <input id = "friend" type="button" value="친구"></intput>
             <input id = "guild" type = "button" value="길드"></intput>
+            <input id = "mail" type = "button" value="우편"></intput>
             <input id = "logout" type="button" value="접속종료"></intput>
         </div>
     </div>
