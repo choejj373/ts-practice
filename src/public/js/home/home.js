@@ -1,4 +1,4 @@
-import { getUserStoreInfo } from './store.js'
+import { getTradeList } from './store.js'
 import { MakeNewGame, updateFrame, clearGame } from './game.js'
 import { getFriendList} from "./friend.js"
 import { getInventoryInfo } from "./inventory.js"
@@ -237,8 +237,7 @@ function showStore(){
     const element = document.getElementById("mainStore");
     element.style.display = '' ;
 
-    getUserStoreInfo();
-
+    getTradeList();
 }
 function showFriend(){
     clearMainView();   
@@ -271,7 +270,7 @@ function clearUserData()
     document.getElementById('equip').replaceChildren();
     document.getElementById('questList').replaceChildren();
     document.getElementById('guildInfoList').replaceChildren();
-    document.getElementById('mailInfoList').replaceChildren();
+    document.getElementById('mailList').replaceChildren();
 
     document.getElementById('requestList').replaceChildren();
     document.getElementById('friendList').replaceChildren();

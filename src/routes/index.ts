@@ -6,6 +6,7 @@ import { output, process } from "./ctrl.js";
 import { friend } from "./friendCtrl.js"
 import { store } from  "./storeCtrl.js"
 import { guild } from  "./guildCtrl.js"
+import { mail } from  "./mailCtrl.js"
 
 import authUtil from '../middlewares/auth.js';
 
@@ -32,9 +33,12 @@ router.put("/user/nickname", authUtil.checkToken,process.changeNickName);
 
 router.get("/store/normal", authUtil.checkToken, store.getNormalTradeList )
 router.get("/store/daily", authUtil.checkToken, store.getDailyTradeList )
-router.get("/store", authUtil.checkToken, store.getTradeDailyStore);
-router.post("/store/daily", authUtil.checkToken, store.dailystore);
-router.post("/store/diamond", authUtil.checkToken, store.diamondstore);
+
+router.put("/store/normal", authUtil.checkToken, store.buyNormalItem )
+router.put("/store/daily", authUtil.checkToken, store.buyDailyItem )
+//router.get("/store", authUtil.checkToken, store.getTradeDailyStore);
+//router.post("/store/daily", authUtil.checkToken, store.dailystore);
+//router.post("/store/diamond", authUtil.checkToken, store.diamondstore);
 
 
 router.get("/equipment", authUtil.checkToken,process.getItemAll );
@@ -79,3 +83,10 @@ router.get('/guild/invite', authUtil.checkToken, guild.getGuildJoinInviteList );
 
 router.put('/guild/invite/accept', authUtil.checkToken, guild.acceptGuildJoinInvite );
 router.put('/guild/invite/refuse', authUtil.checkToken, guild.refuseGuildJoinInvite );
+
+
+router.get('/mail', authUtil.checkToken, mail.getMailList );
+router.post('/mail', authUtil.checkToken, mail.sendMail );
+router.delete("/mail", authUtil.checkToken, mail.deleteMail );
+router.put('/mail', authUtil.checkToken, mail.readMail );
+router.put('/mail/item/detachAll', authUtil.checkToken, mail.getAttachedItemAll );

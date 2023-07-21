@@ -41,7 +41,7 @@ export class Quest{
     }
     // questList를 기반하여 모든 퀘스트를 user_quest Table에 넣어둔다.
     // TODO : 중간에 추가된 퀘스트에 대한 처리가 필요하다.
-    public createUserQuestAll( userId:number ) : void 
+    public onNewUserCreated( userId:number ) : void 
     {
         console.log( "Quest.createUserQuestAll");
         QuestStorage.getInstance().createUserQuestAll( userId, this.questMap );

@@ -5,17 +5,28 @@ import { UserStorage } from "../models/userstorage.js";
 import { Quest } from "../services/quest.js";
 
 export const store = {
-    // 전체 친구 리스트 
-    getNormalTradeList : async ( req:Request,res:Response )=>{
+    getNormalTradeList : ( req:Request,res:Response )=>{
 
-        const response = await Store.getInstance().getNormalTradeList();
+        const response = Store.getInstance().getNormalTradeList();
         return res.json( response );
     },
-    getDailyTradeList : async ( req:Request,res:Response )=>{
+    
+    getDailyTradeList : ( req:Request,res:Response )=>{
 
-        const response = await Store.getInstance().getDailyTradeList();
+        const response = Store.getInstance().getDailyTradeList();
         return res.json( response );
     },
+
+    buyNormalItem : async ( req:CustomRequest,res:Response )=>{
+        const response = await Store.getInstance().buyNormalItem( req.userId??0, req.body.tradeId );
+        return res.json( response );
+    },
+
+    buyDailyItem : async ( req:CustomRequest,res:Response )=>{
+        const response = await Store.getInstance().buyDailyItem( req.userId??0, req.body.tradeId );
+        return res.json( response );
+    },
+
     getTradeDailyStore : async ( req:CustomRequest, res:Response )=>{
         console.log("get process.home userId:", req.userId);
 

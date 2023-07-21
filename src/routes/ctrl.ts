@@ -10,6 +10,7 @@ import { User } from "../services/user.js";
 import { UserStorage } from "../models/userstorage.js";
 // import UserStorageCache from "../models/userstoragecache.js";
 import { Quest } from "../services/quest.js";
+import { Mail } from "../services/mail.js";
 import { PublicKey, getValueDecodedByPrivateKey } from "../modules/secret.js";
 import { oauth2Api , OAUTH_URL } from "../modules/google-login.js"
 
@@ -146,7 +147,8 @@ export const process = {
             response = await User.guestRegister();
             console.log( response );
             if( response.success ){
-                Quest.getInstance().createUserQuestAll( response.userId );
+                Quest.getInstance().onNewUserCreated( response.userId );
+                Mail.getInstance().onNewUserCreated( response.userName );
             }
         }
         catch( err )
@@ -188,7 +190,8 @@ export const process = {
             response = await User.register( req.body.id, req.body.name, req.body.psword );
 
             if( response.success){
-                Quest.getInstance().createUserQuestAll( response.userId );
+                Quest.getInstance().onNewUserCreated( response.userId );
+                Mail.getInstance().onNewUserCreated( req.body.name );
             }
     
         }
@@ -274,9 +277,9 @@ export const process = {
                 const password = "";
                 const salt = "";
         
+                let userName:string = userInfo.name;
+                let result = await UserStorage.getInstance().save( userInfo.id, userName, password, salt );
 
-                let result = await UserStorage.getInstance().save( userInfo.id, userInfo.name, password, salt );
-                let name:string;
                 // nickname 중복 실패면 랜덤 문자열을 붙혀서 다시 시도
                 // 현재(2023,7,17) nickname의 최대 길이는 30자, 구글의 이름 최대 길이가 28이 넘으면 
                 // 무한 루프 위험
@@ -287,15 +290,15 @@ export const process = {
                         break;
                     }
 
-                    name = userInfo.name + "#" + generateRandomString(30 - (userInfo.name.length + 1));
-                    result = await UserStorage.getInstance().save( userInfo.id, name, password, salt );
+                    userName = userInfo.name + "#" + generateRandomString(30 - (userInfo.name.length + 1));
+                    result = await UserStorage.getInstance().save( userInfo.id, userName, password, salt );
                 }
 
                 console.log( result );
 
                 if( result.success ){
-                    Quest.getInstance().createUserQuestAll( result.userId );
-
+                    Quest.getInstance().onNewUserCreated( result.userId );
+                    Mail.getInstance().onNewUserCreated( userName );
                     accountInfo = await UserStorage.getInstance().getAccountInfo( userInfo.id );
                 }
             }

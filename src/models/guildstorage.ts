@@ -150,7 +150,7 @@ export const GuildStorage = {
             await conn.rollback();
             retVal = {success:false,msg:err.sqlMessage};
         }finally{
-            ReleaseConnection( conn );;
+            ReleaseConnection( conn );
         }                
         return retVal;
     },
@@ -517,7 +517,7 @@ export const GuildStorage = {
             const sql1s = Format( sql1, sql1a );
             console.log( sql1s );
 
-            const sql2 = "UPDATE user u INNER JOIN guild_request gr SET u.id = gr.request_user_id WHERE gr.id = ?;";
+            const sql2 = "UPDATE user u INNER JOIN guild_request gr ON u.id = gr.request_user_id SET u.guild_id = gr.guild_id WHERE gr.id = ?;";
 //            const sql2 = "UPDATE user SET guild_id = ( SELECT guild_id FROM guild_request WHERE id = ?) WHERE id = ( SELECT request_user_id FROM guild_request WHERE id = ?);";
             const sql2a = [requestId] ;
             const sql2s = Format( sql2, sql2a);

@@ -58,6 +58,7 @@ export const User = {
 
         if( result.success ){
             result.guestId = id;
+            result.userName = name;
         }
         return result;
     },

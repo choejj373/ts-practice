@@ -60,16 +60,13 @@
         <div id="mainStore" style = "display:none;">
             <div style = "width:300px; height:400px; float: left; background-color:beige">
                 <p> 일일 상점</p>
-                무료 다이아몬드 100개<input id = "freeGetBtn" type = "button" value ="구매" ></input>
+                <table id = "dailyStoreTradeTable" border="1">
+                </table>
             </div>
             <div style = "width:300px; height:400px; float: left; background-color:bisque">
-                <p> 다이아몬드 상점</p>
-                <input id = "buyWeapon" type="button" value="구매"> 무기</intput><br>
-                <input id = "buyNecklace" type="button" value="구매"> 목걸이</intput><br> 
-                <input id = "buyGlove" type="button" value="구매"> 장갑</intput><br>
-                <input id = "buyArmor" type="button" value="구매"> 갑옷</intput><br>
-                <input id = "buyBelt" type="button" value="구매"> 허리띠</intput><br>
-                <input id = "buyShoes" type="button" value="구매"> 신발</intput><br>
+                <p> 일반 상점</p>
+                <table id = "normalStoreTradeTable" border="1">
+                </table>
             </div>
         </div>
         <div id="mainInven" style = "display:none;">
@@ -140,23 +137,44 @@
             </div>
         </div>
         <div id="mainMail" style = "display:none;">
-            <div id = "mailLeftView" style = "width:200px; height:400px; float: left; background-color:beige">
-                <input id = "readMailBtn" type="button" value="우편 읽기"></intput><br>
-                <input id = "sendMailBtn" type="button" value="우편 쓰기"></intput><br>
+            <div id = "mailTopView" style = "width:600px; height:50px; background-color:bisque">
+                <input id = "showMailListBtn" type="button" value="받은 우편"></intput>
+                <input id = "writeMailBtn" type="button" value="우편 쓰기"></intput>
+            </div>  
+            <div id = "mailWriteView" style = "width:600px; height:400px; background-color:beige">
+                <div>
+                    <label >유저 이름</label>
+                    <input type="text" id="mail_receiver_user_name" style = "width:300px;"/><br>
+                    <label >제        목</label>
+                    <input type="text" id="mail_title" style = "width:300px;"/><br>
+                    <label >내        용</label>
+                    <input type="text" id="mail_msg" style = "width:300px;height:100px"/><br>
+                    <label >보낼 골드</label>
+                    <input type="text" id="mail_gold" style = "width:300px;"/><br>
+                    <input id = "sendMailBtn" type="button" value="보내기" />
+                </div>
+            </div>
+            <div id = "mailReadView" style = "display:none">
+                <div id = "mailLeftView" style = "width:200px; height:400px;  background-color:beige">
+                    <ul id = "mailList" style = "width:350px; height:350px; overflow:auto">
+                    </ul>
+                </div>
+                <div id = "mailRightView" style = "width:400px; height:400px; background-color:azure">
+                    <div id = "mailContentView">
+                        <input id = "deleteMailBtn" type="button" value="메일 삭제"/>
+                        <input id = "getAllAttachedItemBtn" type="button" value="첨부된 아이템 가져오기"/><br>
 
-                <!-- <input id = "showGuildAllListBtn" type="button" value="전체 길드 리스트"></intput><br>
-                <input id = "showGuildInfoBtn" type="button" value="길드 정보"></intput><br>
-                <input id = "deleteGuildBtn" type="button" value="길드 삭제"></intput><br>
-                <input id = "showGuildMemberBtn" type="button" value="길드원 리스트"></intput><br>
-                <input id = "deportGuildMemberBtn" type="button" value="길드 멤버 추방"></intput><br>
-                <input id = "leaveGuildMemberBtn" type="button" value="길드 탈퇴"></intput><br>
-                <input id = "inviteGuildMemberBtn" type="button" value="길드 초청"></intput><br>
-                <input id = "showGuildRequestListBtn" type="button" value="길드 가입 요청 리스트"></intput><br> -->
-            </div>
-            <div id = "mailRightView" style = "width:400px; height:400px; float: left; background-color:bisque">
-                <ul id = "mailInfoList" style = "width:200px; height:350px; overflow:auto">
-                </ul>
-            </div>
+                        <p></p>
+                        <input readonly id = "mailTitle" type="text" style = "width:300px;"/><br>
+                        <input readonly id = "mailMsg" type="text" style = "width:300px;height:100px"/><br>
+                        <input readonly id = "mailGold" type="text" style = "width:300px;"/><br>
+                        <ul id = "mailItemList" style = "width:350px; height:350px; overflow:auto">
+                        </ul>                    
+                    </div>
+                    <div id = "mailWriteView" style = "display:none;">
+                    </div>
+                </div>
+            </div>  
         </div>
         <div id = "navBottom" style = "width:600px;background-color:cyan">
             <input id = "store" type="button" value="상점"></intput>

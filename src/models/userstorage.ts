@@ -236,9 +236,6 @@ export class UserStorage{
                 console.log( "rollback");                            
                 await conn.rollback();
             }
-         
- 
- 
         }catch( err:any ){
             console.log( err );
             await conn.rollback();
@@ -549,13 +546,13 @@ export class UserStorage{
     // overflow 체크 필요
     async addUserMoney( user_id:number, money:number ){
         const conn = await GetConnection();
-        let retVal = { success:false };
+        let retVal = { success:false , msg:""};
         try{        
         
-            const result:any = await conn.query("UPDATE user SET money = money + ? WHERE id = ?;", [money, user_id] );
+            const [result]:any = await conn.query("UPDATE user SET money = money + ? WHERE id = ?;", [money, user_id] );
 
-            if( result[0].affectedRows > 0 ){
-                retVal =  {success:true};
+            if( result.affectedRows > 0 ){
+                retVal.success =  true;
             };
         }catch( err ){
             console.error( err );
@@ -564,6 +561,23 @@ export class UserStorage{
         }
         return retVal;
     };
+    async addDiamond( userId:number, value:number ){
+        const conn = await GetConnection();
+        let retVal = { success:false, msg:"" };
+        try{        
+            const [result]:any = await conn.query("UPDATE user SET diamond = diamond + ? WHERE id = ?;", [value, userId] );
+
+            if( result.affectedRows > 0 ){
+                retVal.success = true;
+            };
+        }catch( err ){
+            console.error( err );
+        }finally{
+            ReleaseConnection( conn );
+        }
+        return retVal;
+    };
+
 }
 
 
