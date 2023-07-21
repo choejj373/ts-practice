@@ -136,35 +136,35 @@ export class UserStorage{
         }        
     }
 
-    async deleteTradeDailyStore( userId : number, tradeId : number )
-    {
-        const conn = await GetConnection();
+    // async deleteTradeDailyStore( userId : number, tradeId : number )
+    // {
+    //     const conn = await GetConnection();
 
-        try{
-            conn.query("delete from trade_daily_store where id = ? AND owner = ?;", 
-                        [ tradeId, userId] );
+    //     try{
+    //         conn.query("delete from trade_daily_store where id = ? AND owner = ?;", 
+    //                     [ tradeId, userId] );
 
-        }catch( err ){
-            console.log( err );
-        }finally{
-            ReleaseConnection( conn );
-        }
-    }
-    async getTradeDailyStore( user_id : number ){
-        const conn = await GetConnection();
-        let retVal : any;
+    //     }catch( err ){
+    //         console.log( err );
+    //     }finally{
+    //         ReleaseConnection( conn );
+    //     }
+    // }
+    // async getTradeDailyStore( user_id : number ){
+    //     const conn = await GetConnection();
+    //     let retVal : any;
 
-        try{
-            const [row]:any = await conn.query("select * from trade_daily_store where owner = ?;", [user_id] );
+    //     try{
+    //         const [row]:any = await conn.query("select * from trade_daily_store where owner = ?;", [user_id] );
 
-            retVal = row;
-        }catch( err ){
-            console.log( err );
-        }finally{
-            ReleaseConnection( conn );
-        }
-        return retVal;
-    }
+    //         retVal = row;
+    //     }catch( err ){
+    //         console.log( err );
+    //     }finally{
+    //         ReleaseConnection( conn );
+    //     }
+    //     return retVal;
+    // }
 
 
     async getAccountInfo(id:string){
@@ -302,76 +302,76 @@ export class UserStorage{
         return retVal;
     };
 
-    async isSoldOutDailyStore( user_id:number, type:number){
-        const conn = await GetConnection();
-        let retVal = { success:true , msg:'sold out'};
+    // async isSoldOutDailyStore( user_id:number, type:number){
+    //     const conn = await GetConnection();
+    //     let retVal = { success:true , msg:'sold out'};
         
-        try{
-            const sql1 = "SELECT * FROM trade_daily_store WHERE owner = ? and type = ?";
-            const sql1a = [user_id, type]
-            const sql1s = Format( sql1, sql1a );
-            console.log( sql1s );
+    //     try{
+    //         const sql1 = "SELECT * FROM trade_daily_store WHERE owner = ? and type = ?";
+    //         const sql1a = [user_id, type]
+    //         const sql1s = Format( sql1, sql1a );
+    //         console.log( sql1s );
 
-            const [row]:any = await conn.query( sql1s );
+    //         const [row]:any = await conn.query( sql1s );
 
-            if( Array.isArray(row) && row.length === 0 ) {
-                retVal = {success:false,msg:""};
-            }
-        } catch( err ){
-            console.log( err );
-        } finally{
-            console.log( "finally");
-            ReleaseConnection( conn );
-        }
-        return retVal;
-    }
+    //         if( Array.isArray(row) && row.length === 0 ) {
+    //             retVal = {success:false,msg:""};
+    //         }
+    //     } catch( err ){
+    //         console.log( err );
+    //     } finally{
+    //         console.log( "finally");
+    //         ReleaseConnection( conn );
+    //     }
+    //     return retVal;
+    // }
 
-    async getFreeDiamond( user_id:number ){
-        const conn = await GetConnection();
-        let retVal = { success:false, msg:"" };
+    // async getFreeDiamond( user_id:number ){
+    //     const conn = await GetConnection();
+    //     let retVal = { success:false, msg:"" };
 
-        try{
+    //     try{
 
     
-            const nowDate = new Date();
-            const expireDate = new Date( nowDate.setHours( 24,0,0,0 ) );
+    //         const nowDate = new Date();
+    //         const expireDate = new Date( nowDate.setHours( 24,0,0,0 ) );
 
-            console.log( expireDate );
+    //         console.log( expireDate );
 
-            const freeDiamond = 100;
-            const sql1 = "INSERT INTO trade_daily_store (owner, type, value, expire_time ) values (?,?,?,?);";
-            const sql1a = [user_id, 1, freeDiamond, expireDate ]
-            const sql1s = Format( sql1, sql1a );
-            console.log( sql1s );
+    //         const freeDiamond = 100;
+    //         const sql1 = "INSERT INTO trade_daily_store (owner, type, value, expire_time ) values (?,?,?,?);";
+    //         const sql1a = [user_id, 1, freeDiamond, expireDate ]
+    //         const sql1s = Format( sql1, sql1a );
+    //         console.log( sql1s );
 
             
-            const sql2a = [freeDiamond, user_id]
-            const sql2 = "UPDATE user SET diamond = diamond + ? WHERE id = ?;";
-            const sql2s = Format( sql2, sql2a );
+    //         const sql2a = [freeDiamond, user_id]
+    //         const sql2 = "UPDATE user SET diamond = diamond + ? WHERE id = ?;";
+    //         const sql2s = Format( sql2, sql2a );
 
-            console.log( sql2s );
+    //         console.log( sql2s );
 
-            await conn.beginTransaction();
+    //         await conn.beginTransaction();
 
-            const result:any = await conn.query( sql1s + sql2s );
+    //         const result:any = await conn.query( sql1s + sql2s );
 
-            if( result[0][0].affectedRows > 0 && result[0][1].changedRows > 0 ) {
-                console.log( "commit");
-                await conn.commit();
-                retVal = {success:true, msg:""};
-            }else{
-                console.log( "rollback : ");                            
-                await conn.rollback();
-            }
-        } catch( err ){
-            console.log( "rollback-", err );
-            await conn.rollback();
-        } finally{
-            console.log( "finally");
-            ReleaseConnection( conn );
-        }
-        return retVal;
-    };
+    //         if( result[0][0].affectedRows > 0 && result[0][1].changedRows > 0 ) {
+    //             console.log( "commit");
+    //             await conn.commit();
+    //             retVal = {success:true, msg:""};
+    //         }else{
+    //             console.log( "rollback : ");                            
+    //             await conn.rollback();
+    //         }
+    //     } catch( err ){
+    //         console.log( "rollback-", err );
+    //         await conn.rollback();
+    //     } finally{
+    //         console.log( "finally");
+    //         ReleaseConnection( conn );
+    //     }
+    //     return retVal;
+    // };
 
     //TODO ITEM_INDEX는 DB에서 가져오지 말고 CLIENT에서 받아서 UPDATE시에 검증하는 방식으로 바꾸자
     //ITEM_TABLE => USER_ITEM 변경, ITEM_LIST 추가 필요
@@ -444,46 +444,46 @@ export class UserStorage{
         return retVal;
     }
 
-    async buyItemByDia( user_id:number, itemType:number, price:number ){
-        const conn = await GetConnection();
-        let retVal = { success:false,msg:"error" };
-        try{
-            const sql1 = "INSERT INTO user_item (item_id, owner) values (?,?);";
-            const sql1a = [itemType, user_id]
-            const sql1s = Format( sql1, sql1a );
-            console.log( sql1s );
+    // async buyItemByDia( user_id:number, itemType:number, price:number ){
+    //     const conn = await GetConnection();
+    //     let retVal = { success:false,msg:"error" };
+    //     try{
+    //         const sql1 = "INSERT INTO user_item (item_id, owner) values (?,?);";
+    //         const sql1a = [itemType, user_id]
+    //         const sql1s = Format( sql1, sql1a );
+    //         console.log( sql1s );
 
-            const sql2a = [price, user_id, price]
-            const sql2 = "UPDATE user SET diamond = diamond - ? WHERE id = ? AND diamond >= ?;";
-            const sql2s = Format( sql2, sql2a );
+    //         const sql2a = [price, user_id, price]
+    //         const sql2 = "UPDATE user SET diamond = diamond - ? WHERE id = ? AND diamond >= ?;";
+    //         const sql2s = Format( sql2, sql2a );
 
-            console.log( sql2s );
+    //         console.log( sql2s );
 
-            await conn.beginTransaction();
+    //         await conn.beginTransaction();
 
-            const result:any = await conn.query( sql1s + sql2s );
+    //         const result:any = await conn.query( sql1s + sql2s );
 
-            if( result[0][0].affectedRows > 0 && result[0][1].affectedRows > 0 ) {
-                console.log( "commit");
-                await conn.commit();
-                retVal = {success:true,msg:""};
-            }else{
-                console.log( "rollback : ");                            
-                await conn.rollback();
-                if( result[0][1].affectedRows <= 0 ){
-                    retVal = {success:false, msg:'not enough diamond'};
-                }
+    //         if( result[0][0].affectedRows > 0 && result[0][1].affectedRows > 0 ) {
+    //             console.log( "commit");
+    //             await conn.commit();
+    //             retVal = {success:true,msg:""};
+    //         }else{
+    //             console.log( "rollback : ");                            
+    //             await conn.rollback();
+    //             if( result[0][1].affectedRows <= 0 ){
+    //                 retVal = {success:false, msg:'not enough diamond'};
+    //             }
 
-            }
-        } catch( err ){
-            console.log( "rollback-", err );
-            await conn.rollback();
-        } finally{
-            console.log( "finally");
-            ReleaseConnection( conn );
-        }
-        return retVal;
-    }
+    //         }
+    //     } catch( err ){
+    //         console.log( "rollback-", err );
+    //         await conn.rollback();
+    //     } finally{
+    //         console.log( "finally");
+    //         ReleaseConnection( conn );
+    //     }
+    //     return retVal;
+    // }
     // 뭔가 지저분 그냥 sp를 호출할까? 아님 money를 일단 가져올까?
     async buyItem( user_id:number ){
 
