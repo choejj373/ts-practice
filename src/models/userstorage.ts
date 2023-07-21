@@ -578,6 +578,54 @@ export class UserStorage{
         return retVal;
     };
 
+    // type : 1-login, 2-dailyStore
+    async isRestricted( userId:number, type:number, subId:number ){
+        const conn = await GetConnection();
+        let retVal = false;
+        try{        
+            const [rows]:any = await conn.query("SELECT expire_time FROM user_restrict WHERE user_id=? AND type=? AND sub_id=?;", 
+            [userId, type, subId ] );
+
+            if( Array.isArray( rows ) && rows.length > 0 ){
+                const nowDateUTC = new Date();
+                const expireDateUTC = new Date( rows[0].expire_time );
+
+                console.log( nowDateUTC );
+                console.log( expireDateUTC );
+
+                if( expireDateUTC.getTime() > nowDateUTC.getTime() ){
+                    retVal = true;
+                }
+            };
+        }catch( err ){
+            console.error( err );
+        }finally{
+            ReleaseConnection( conn );
+        }
+        return retVal;
+    }
+    async setRestricted( userId:number, type:number, subId:number, expireTime:Date ){
+       const conn = await GetConnection();
+        try{        
+            let [result]:any = await conn.query("UPDATE user_restrict SET expire_time = ? WHERE user_id=? AND type=? AND sub_id=?;", 
+                    [ expireTime, userId, type, subId ] );
+
+            if( result.affectedRows === 0 )
+            {
+                [result] = await conn.query("INSERT INTO user_restrict( user_id, type, sub_id, expire_time) VALUES(?,?,?,?);", 
+                    [ userId, type, subId, expireTime ] );
+
+                if( result.affectedRows === 0){
+                    console.error("setRestricted : Insert is fail")
+                }
+            }
+        }catch( err ){
+            console.error( err );
+        }finally{
+            ReleaseConnection( conn );
+        }
+    }    
+
 }
 
 

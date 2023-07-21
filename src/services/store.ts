@@ -94,7 +94,12 @@ export class Store {
             return response;
         }
 
-        //TODO Check UserRestriced( userId, tradeId, nowdate )
+        if( await UserStorage.getInstance().isRestricted( userId, 2, tradeItem.id ) )
+        {
+            response.msg = "Request is Restricted";
+            return response;
+        }
+
         switch( tradeItem.type )
         {
             case 1:
@@ -112,7 +117,14 @@ export class Store {
         }
 
         //TODO InsertOrUpdate UserRestriced( userId, tradeId, nowdate )
+        if( response.success ){
 
+            const nowDate = new Date();
+            // 금일 자정
+            const newDailyExpireDate = new Date( nowDate.setHours( 24,0,0,0) );
+    
+            UserStorage.getInstance().setRestricted( userId, 2, tradeItem.id, newDailyExpireDate );
+        }
         return response;        
     }
 
