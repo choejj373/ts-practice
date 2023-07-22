@@ -128,23 +128,4 @@
     + 어드민
         + GM 우편 발송
     + ================================================================================
-    mysql> show tables;
-    +--------------------+
-    | Tables_in_practice |
-    +--------------------+
-    | account            |
-    | friend_request     |
-    | guild              |
-    | guild_invite       |
-    | guild_member       |
-    | guild_request      |
-    | item_list          |
-    | mail               |
-    | quest_list         |
-    | trade_daily_store  |
-    | trade_list         |
-    | user               |
-    | user_friend        |
-    | user_item          |
-    | user_quest         |
-    +--------------------+
+   
