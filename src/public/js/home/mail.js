@@ -1,6 +1,7 @@
 import { processResponseFail } from './home.js'
 let mailMap = new Map();
 let selectedMailId = 0;
+let mailItemArray = [];
 
 const showMailListBtn = document.getElementById("showMailListBtn");
 showMailListBtn.addEventListener("click", showMailList );
@@ -117,6 +118,18 @@ function onClickedMailListItem(element)
         mailMsg.value = mail.msg;
         mailGold.value = mail.gold;
 
+        const mailItemList = document.getElementById("mailItemList");
+        mailItemList.replaceChildren();
+
+        mailItemArray.forEach((item)=>{
+            if( item.mail_id === mail.id ){
+                let messageItem = document.createElement('li');
+                messageItem.textContent = item.id +":" +item.item_index;
+                mailItemList.appendChild(messageItem);
+            }
+        })
+
+
         if( mail.checked === 0)
         {
             sendReadMail( mail.id );
@@ -181,6 +194,8 @@ function showMailList(){
 
                 mailList.appendChild(messageItem);
             });
+
+            mailItemArray = res.items;
         }
         else{
             processResponseFail( res.msg )

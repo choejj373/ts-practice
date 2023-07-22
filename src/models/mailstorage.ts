@@ -12,14 +12,21 @@ export const MailStorage = {
 
     getMailList: async (userId:number)=>{
         const conn = await GetConnection();
-        let retVal = { success:false, mails:{} };
+        let retVal = { success:false, mails:{}, items:[] };
 
         try{
-            const [rows]:any = await conn.query("SELECT * FROM mail WHERE receiver_user_id=?;",[userId] );
+            let query = "SELECT * FROM mail WHERE receiver_user_id=?;";
+            const [rows]:any = await conn.query( query, [userId] );
             console.log( rows );
 
             retVal.success = true;
             retVal.mails = rows;
+
+            if( Array.isArray(rows) && rows.length > 0){
+                query = "SELECT * FROM mail_item WHERE mail_id in (SELECT id FROM mail WHERE receiver_user_id=?);";
+                const [mailItems] : any = await conn.query( query, [userId]);
+                retVal.items = mailItems;
+            }
         }catch(err)
         {
             console.log(err);
