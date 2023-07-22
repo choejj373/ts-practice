@@ -17,6 +17,11 @@ export const guild = {
 
     getMyGuildInfo :async ( req:CustomRequest,res:Response )=>{
         const response = await Guild.getInstance().getMyGuildInfo( req.userId ?? 0);
+        const accessToken = req.cookies.token;
+
+        if( response.success){
+            response.msg = accessToken;
+        }
         return res.json( response );
     }, 
 

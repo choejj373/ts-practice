@@ -1,3 +1,4 @@
+import { io } from "https://cdn.socket.io/4.4.1/socket.io.esm.min.js";
 import { processResponseFail } from './home.js'
 
 
@@ -14,9 +15,10 @@ const showGuildMemberBtn    = document.getElementById("showGuildMemberBtn");
 const leaveGuildMemberBtn   = document.getElementById("leaveGuildMemberBtn");
 const showGuildInviteListBtn = document.getElementById("showGuildInviteListBtn");
 const showGuildRequestListBtn = document.getElementById("showGuildRequestListBtn");
+const sendGuildChatBtn = document.getElementById("sendGuildChatBtn");
 
 
-
+sendGuildChatBtn.addEventListener("click", sendGuildChat);
 createGuildBtn.addEventListener("click", createGuild );
 deleteGuildBtn.addEventListener("click", deleteGuild );
 showGuildAllListBtn.addEventListener("click", showGuildAllList );
@@ -284,6 +286,64 @@ function showGuildAllList(){
         }
     })    
 }
+
+// import io from  "socket.io-client";
+
+let socket = undefined;
+function sendGuildChat(){
+    if( socket !== undefined ){
+        const guildChatMsg = document.getElementById("guildChatMsg");
+        socket.emit("chat", guildChatMsg.value);
+    }
+}
+function connectChatServer( guildName, accessToken ){
+
+    console.log( guildName );
+    console.log(accessToken);
+    console.log( socket );
+    if( socket === undefined ){
+        socket = io("http://localhost:3100/guildchat",
+        {
+            withCredentials: true,
+            auth:{
+                "token" : accessToken
+            },
+            extraHeaders:{
+                "guildId"     : guildName
+            }
+        });
+
+        socket.on("chat", (arg)=>{
+
+            const str = "\n" + arg;
+            const textarea = document.querySelector("#guildChatText").value += str;
+            console.log( textarea.scrollTop );
+            console.log( textarea.scrollHeight );
+
+            //textarea.scrollTo= 20;
+            
+            //textarea.setAttribute( "scrollTop", textarea.getAttribute("scrollHeight") );
+            // if( textarea.scrollHeight){
+            //     textarea.scrollTop = textarea.;
+            // }
+            console.log(arg);
+        })
+
+        socket.on("disconnect", (reason)=>{
+            console.log( reason );
+            socket = undefined;
+        })
+
+
+    }
+
+    
+
+    //socket.on("disconnected")
+
+
+}
+
 // <!-- 내 길드 정보 -->
 function showMyGuildInfo(){
     fetch('/guild/mine')
@@ -297,6 +357,8 @@ function showMyGuildInfo(){
             let messageItem = document.createElement('li');
             messageItem.textContent = res.id + ":" + res.name;
             guildInfoList.appendChild(messageItem);
+
+            connectChatServer( res.name, res.msg );
 
         } else {
             processResponseFail( res.msg )
