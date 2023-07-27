@@ -3,7 +3,7 @@ import winston from 'winston';
 import winstonDaily from 'winston-daily-rotate-file';
 import process from 'process';
 
-import 'dotenv/config'
+import config from '../config/index.js'
 
 const { combine, timestamp, label, printf } = winston.format;
 
@@ -50,7 +50,7 @@ const logger = winston.createLogger({
     // ],
 });
 
-if( process.env.MODE_ENV != 'SERVICE'){
+if( config.mode_env != 'SERVICE'){
     logger.add(
         new winston.transports.Console({
             level: 'silly',

@@ -1,16 +1,16 @@
 "use strict"
 
-
+import config from '../config/index.js'
 import mysql from 'mysql2/promise';
 
 let dbPool:mysql.Pool;
 
 export function CreateDBPool(){
     dbPool = mysql.createPool({
-        host:process.env.DB_HOST,
-        user:process.env.DB_USER,
-        password:process.env.DB_PSWORD,
-        database:process.env.DB_DATABASE,
+        host:config.database.host,
+        user:config.database.user,
+        password:config.database.password,
+        database:config.database.database,
         connectionLimit:10,
         multipleStatements: true,
         keepAliveInitialDelay: 10000, // 0 by default.

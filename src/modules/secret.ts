@@ -1,10 +1,10 @@
 import crypto from "crypto";
 // import dotenv from 'dotenv';
 // dotenv.config();
-import 'dotenv/config'
+import config from '../config/index.js'
 
-const PrivateKey = process.env.PRIVATEKEY??"";
-export const PublicKey = process.env.PUBLICKEY??"";
+const PrivateKey = config.rsa.privateKey??"";
+export const PublicKey = config.rsa.publicKey??"";
 
     // https://gist.github.com/btd/915985269cd2c98a17144a4660f45a09 thx
 export const getValueDecodedByPrivateKey = ( encodedText:string) =>{

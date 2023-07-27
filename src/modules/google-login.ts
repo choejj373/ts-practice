@@ -3,10 +3,10 @@ import axios from 'axios';
 // import dotenv from 'dotenv';
 // dotenv.config();
 
-import 'dotenv/config'
+import config from '../config/index.js'
 
-const CLIENT_ID = process.env.GOOGLE_ID;
-const CLIENT_SECRET = process.env.GOOGLE_SECRET;
+const CLIENT_ID = config.google.id;
+const CLIENT_SECRET = config.google.secret;
 
 const AUTHORIZE_URI = "https://accounts.google.com/o/oauth2/v2/auth";
 const REDIRECT_URL = "http://localhost:3000/auth/google/callback";

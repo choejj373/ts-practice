@@ -1,4 +1,4 @@
-import { GetConnection, ReleaseConnection, Format } from "../config/db.js";
+import { GetConnection, ReleaseConnection, Format } from "./db.js";
 import { SendMailItem } from "../services/mail.js"
 
 

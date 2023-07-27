@@ -1,6 +1,6 @@
 "use strict"
 
-import { GetConnection, ReleaseConnection, Format } from "../config/db.js";
+import { GetConnection, ReleaseConnection, Format } from "./db.js";
 
 
 /*
