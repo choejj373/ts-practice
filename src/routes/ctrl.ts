@@ -178,7 +178,7 @@ export const process = {
 // todo user_id를 가져온다;;;
             Quest.getInstance().processLogin( response.accountInfo.user_id );
 
-            return res.json( { success:true, token: jwtToken.token });
+            return res.json( { success:true });
 
         }
         return res.json(response)

@@ -5,12 +5,19 @@ import mysql from 'mysql2/promise';
 
 let dbPool:mysql.Pool;
 
-export function CreateDBPool(){
+interface dbconfig{
+    host:string,
+    user:string,
+    password:string,
+    database:string
+}
+
+export function CreateDBPool( config:dbconfig){
     dbPool = mysql.createPool({
-        host:config.database.host,
-        user:config.database.user,
-        password:config.database.password,
-        database:config.database.database,
+        host:config.host,
+        user:config.user,
+        password:config.password,
+        database:config.database,
         connectionLimit:10,
         multipleStatements: true,
         keepAliveInitialDelay: 10000, // 0 by default.

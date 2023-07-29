@@ -54,7 +54,7 @@ export const User = {
             result = await UserStorage.getInstance().save( id, name , password, salt );
         }while( (result.success === false) && isNameDuplicated( result.msg))
 
-        console.log( result );
+        // console.log( result );
 
         if( result.success ){
             result.guestId = id;

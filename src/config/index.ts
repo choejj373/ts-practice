@@ -4,11 +4,11 @@ export default{
     mode_env: process.env.MODE_ENV,
     port: process.env.PORT,
     database:{
-        host:process.env.DB_HOST,
-        user:process.env.DB_USER,
-        port:process.env.DB_PORT,
-        password:process.env.DB_PSWORD,
-        database:process.env.DB_DATABASE
+        host:process.env.DB_HOST??"",
+        user:process.env.DB_USER??"",
+        port:process.env.DB_PORT??"",
+        password:process.env.DB_PSWORD??"",
+        database:process.env.DB_DATABASE??""
     },
     redis:{
         host:process.env.REDIS_HOST,
