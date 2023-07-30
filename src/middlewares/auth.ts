@@ -15,7 +15,8 @@ const authUtil = {
         if( !token ){
             // return res.json( util.fail( CODE.BAD_REQUEST, MSG.EMPTY_TOKEN));
             console.log("not found token")
-            return res.status(401).json( {success:false, msg:"token not found"} )
+        //    return res.status(401).statusMessage = "token not found";
+          return res.status(401).json( {success:false, msg:"token not found"} )
         }
 
         const user : any = await token.verify( accessToken );
@@ -29,6 +30,7 @@ const authUtil = {
         if( user == TOKEN_INVALID){
             // return res.json( util.fail( CODE.UNAUTHORIZED, MSG.INVALID_TOKEN));
             console.log("token invalid")
+            // return res.status(401).send("token invalid");
             return res.status(401).json( {success:false, msg:"token invalid"})
         }
 

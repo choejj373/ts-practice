@@ -110,9 +110,12 @@ function googleLogin(){
 
     //window.open("http://localhost:3000/auth/google",  "_self")    
     fetch("/auth/google")
+    .catch( (error) => {
+        console.log( error );
+    })
     .then( (res) => res.json()) // json() promise
     .then( (res) => {
-        //console.log( res);
+        console.log( res);
         if( res.success ){
             console.log("google login success");
             window.open( res.url, "_self" );

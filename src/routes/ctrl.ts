@@ -249,6 +249,7 @@ export const process = {
     googleLogin : async ( req:CustomRequest, res:Response )=>{
         console.log("googleLogin")
         // res.redirect(OAUTH_URL);
+        //return res.status(401).json({ success:true, url: OAUTH_URL });
         return res.json({ success:true, url: OAUTH_URL });
     },
     googleRedirect : async ( req:CustomRequest, res:Response )=>{

@@ -292,23 +292,53 @@ function showResisterView()
 function checkToken(){
     console.log("checkToken");
 
-    fetch("/", {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify( )
-    })
-    .then( (res) => res.json()) // json() promise
-    .then( (res) => {
-        //console.log( res);
-        if( res.success ){
-            showMainView();
-            getUserInfo();
-        } else {
-            processResponseFail( res.msg )
-        }
-    })
+    // axios({
+    //     method:'put',
+    //     url:'/',
+    //     data:{}
+    // })
+    // .then( res=>{
+    //      console.log( res );
+    //     if( res.success ){
+    //         showMainView();
+    //         getUserInfo();
+    //     } else {
+    //         processResponseFail( res.msg )
+    //     }
+    // })
+    // .catch(error=>{
+    //     showLoginView();
+    //     console.log(error);
+
+    // })
+    try{
+        fetch("/", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify( )
+        })
+        .then( (res) => { 
+            console.log( res.ok );
+            console.log( res.status);
+            return res.json()}) // json() promise
+        .then( (res) => {
+            console.log( res);
+            if( res.success ){
+                showMainView();
+                getUserInfo();
+            } else {
+                processResponseFail( res.msg )
+            }
+        })
+        .catch((error)=>{
+            console.log(error);
+        })
+    }
+    catch(err){
+        console.log(err);
+    }
 }
 const usernameTxt = document.getElementById("name");
 const expTxt = document.getElementById("exp");
