@@ -1,6 +1,7 @@
 import express from "express";
 import cookieParser from 'cookie-parser';
 import path from "path";
+import helmet from 'helmet';
 import config from './config/index.js'
 import { router } from "./routes/index.js";
 
@@ -18,6 +19,7 @@ export const createApp =() =>{
     app.set("views", path.join(__dirname,"./src/views" ) );
     app.set("view engine", "ejs");
 
+    app.use(helmet());
     app.use(cookieParser( config.cookie.secret));
     app.use(express.static(path.join(__dirname, '/src/public')));
     app.use(express.json());

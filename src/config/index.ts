@@ -11,9 +11,9 @@ export default{
         database:process.env.DB_DATABASE??""
     },
     redis:{
-        host:process.env.REDIS_HOST,
-        port:process.env.REDIS_PORT,
-        password:process.env.REDIS_PASSWORD
+        host:process.env.REDIS_HOST??"",
+        port:process.env.REDIS_PORT??"",
+        password:process.env.REDIS_PASSWORD??""
     },
     cookie:{
         secret:process.env.COOKIE_SECRET,

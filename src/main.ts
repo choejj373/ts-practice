@@ -4,6 +4,7 @@ import config from './config/index.js';
 
 import { createApp } from './app.js';
 import { CreateDBPool } from './models/db.js';
+import { ConnectRedis } from './caches/redis.js';
 import { Quest } from './services/quest.js';
 import { Store } from './services/store.js';
 
@@ -14,6 +15,7 @@ const app = createApp();
 // DB Connectin Pool 생성
 
 CreateDBPool( config.database );
+ConnectRedis( config.redis );
 
 // Quest 관련 변하지 않는 Data를 DB로 부터 Load
 Quest.getInstance().loadData();

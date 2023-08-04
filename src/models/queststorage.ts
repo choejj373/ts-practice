@@ -40,25 +40,25 @@ limit_value : 제한 값
 // limit_type   : 1 - 스테이지 클리어
 
 
-export class QuestStorage
+export const QuestStorage = 
 {
 
-    private static _instance:QuestStorage;
-    private constructor(){
+    // private static _instance:QuestStorage;
+    // private constructor(){
 
-    }
+    // }
 
-    public static getInstance():QuestStorage
-    {
-        if( this._instance == null )
-            this._instance  = new QuestStorage();
+    // public static getInstance():QuestStorage
+    // {
+    //     if( this._instance == null )
+    //         this._instance  = new QuestStorage();
 
-        return this._instance;
-    }
+    //     return this._instance;
+    // }
         
 
     // 모든 Quest 기본 정보를 db에서 가져온다.
-    async loadQuestList(){
+    loadQuestList:async ()=>{
         console.log("loadQuestList")
         const conn = await GetConnection();
 
@@ -75,9 +75,9 @@ export class QuestStorage
             ReleaseConnection( conn );
         }
         return retVal;
-    }
+    },
 
-    async questDeleteNCreate( userId:number, deleteQuestId:number, createQuestIndex:number, createQuestType:number )
+    questDeleteNCreate : async ( userId:number, deleteQuestId:number, createQuestIndex:number, createQuestType:number ) =>
     {
         const conn = await GetConnection();
         let retVal = { success:false,msg:"" };
@@ -116,9 +116,9 @@ export class QuestStorage
             ReleaseConnection( conn );
         }
         return retVal;         
-    }
+    },
     // rewardValue : 아이템의 갯수, 소모 아이템등의 갯수가 존재하는 아이템의 경우 사용 defalut = 1
-    async rewardItem( userId:number, questId:number, questIndex:number, fulfillValue:number, rewardValue:number, rewardSubtype:number )
+    rewardItem : async ( userId:number, questId:number, questIndex:number, fulfillValue:number, rewardValue:number, rewardSubtype:number ) =>
     {
         const conn = await GetConnection();
         let retVal = { success:false, msg:"" };
@@ -157,8 +157,8 @@ export class QuestStorage
             ReleaseConnection( conn );
         }
         return retVal;      
-    }
-    async rewardMoney( userId:number, questId:number, questIndex:number, fulfillValue:number, rewardValue:number )
+    },
+    rewardMoney : async ( userId:number, questId:number, questIndex:number, fulfillValue:number, rewardValue:number ) =>
     {
         const conn = await GetConnection();
 
@@ -198,8 +198,8 @@ export class QuestStorage
             ReleaseConnection( conn );
         }
         return retVal;        
-    }
-    async rewardDiamond( userId:number, questId:number, questIndex:number, fulfillValue:number, rewardValue:number )
+    },
+    rewardDiamond : async ( userId:number, questId:number, questIndex:number, fulfillValue:number, rewardValue:number ) =>
     {
         const conn = await GetConnection();
         let retVal = { success:false , msg:""};
@@ -237,8 +237,9 @@ export class QuestStorage
             ReleaseConnection( conn );
         }
         return retVal;
-    }
-    async setUserQuestValue( userId:number, fulfillType:number, fulfillValue:number ){
+    },
+    setUserQuestValue : async ( userId:number, fulfillType:number, fulfillValue:number ) =>
+    {
         const conn = await GetConnection();
 
         try{
@@ -254,8 +255,29 @@ export class QuestStorage
         }finally{
             ReleaseConnection( conn );
         }
-    }
-    async addUserQuestValue( userId:number, fulfillType:number, addValue:number ){
+    },
+    addUserQuestValue: async ( questId:number, userId:number, addValue:number ) =>
+    {
+        console.log( questId );
+        console.log( userId );
+        console.log( addValue );
+
+        const conn = await GetConnection();
+
+        try{
+            const [result]:any = await conn.query("UPDATE user_quest SET value = value + ? WHERE id = ? AND owner = ?;", 
+                    [addValue, questId, userId] );
+            console.log( result );
+
+        }catch(err)
+        {
+            console.log(err);
+        }finally{
+            ReleaseConnection( conn );
+        }
+    },
+    addUserQuestValueByFulfillType: async ( userId:number, fulfillType:number, addValue:number ) =>
+    {
 
         const conn = await GetConnection();
 
@@ -272,9 +294,9 @@ export class QuestStorage
         }finally{
             ReleaseConnection( conn );
         }
-    }
-
-    async getUserQuestInfo( userId:number, questType:number ){
+    },
+    getUserQuestInfo:async ( userId:number, questType:number )=>
+    {
         const conn = await GetConnection();
 
         let retVal = { success: false, quests:[] };
@@ -292,11 +314,29 @@ export class QuestStorage
             ReleaseConnection( conn );
         }
         return retVal;
-    }
+    },
     
+    getUserQuestList:async ( userId:number)=>
+    {
+        const conn = await GetConnection();
 
+        let retVal : any[]= [];
+
+        try{
+            const [row] : any = await conn.query("SELECT u.id, u.quest_index, q.fulfill_type FROM user_quest u INNER JOIN quest_list q ON u.quest_index = q.id WHERE owner = ?;", 
+                    [userId] );
+
+            retVal = row;
+        }catch(err)
+        {
+            console.log(err);
+        }finally{
+            ReleaseConnection( conn );
+        }
+        return retVal;
+    },
     // 만료된 일일/주간 퀘스트 RESET
-    async resetRepeatQuestInfo( questId:number, userId:number, expireDate:any )
+    resetRepeatQuestInfo : async ( questId:number, userId:number, expireDate:any )=>
     {
         const conn = await GetConnection();
 
@@ -314,9 +354,9 @@ export class QuestStorage
             ReleaseConnection( conn );
         }
         return retVal;
-    }
+    },
 
-    async createUserQuestAll( userId:number, questList:any )
+    createUserQuestAll : async ( userId:number, questList:any ) =>
     {
         console.log( "QuestStorage.createUserQuestAll");
 

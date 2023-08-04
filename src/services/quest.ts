@@ -1,6 +1,7 @@
 "use strict"
 
 import { QuestStorage } from '../models/queststorage.js';
+import { QuestCache } from '../caches/questcache.js'
 
 // require('moment-timezone');
 // import moment from 'moment';
@@ -12,6 +13,14 @@ import moment, { tz } from "moment-timezone";
 // 4. 퀘스트별로 UPDATE가 필요한 부분은 이 모듈을 통해서  처리한다.( 매일 로그인, 몬스터 처치, 보스 처치 등등 )
 // 5. 보상 부여도 여기서
 
+
+// 퀘스트 진행 방식 변경
+// 1. Redis에 유저의 진행중인 정보 저장(완료된 퀘스트는 제외)
+//      1. key - quest:userId
+//      2. questId
+//      3. questType
+// 2. Quest Type으로 QuestId를 조회
+// 3. RDB Update
 export class Quest{
 
     private static _instance:Quest;
@@ -20,9 +29,19 @@ export class Quest{
     private constructor(){
         this.questMap = new Map();
     }
+
+    public static getInstance():Quest
+    {
+        if( this._instance == null )
+            this._instance  = new Quest();
+
+        return this._instance;
+    }
+
     public loadData(){
         console.log("Quest::loadData")
-        QuestStorage.getInstance().loadQuestList()
+
+        QuestStorage.loadQuestList()
         .then((result:any)=>{
 
             result.quests.forEach( (quest:any) =>{
@@ -32,19 +51,12 @@ export class Quest{
         })
         .catch(console.log)
     }
-    public static getInstance():Quest
-    {
-        if( this._instance == null )
-            this._instance  = new Quest();
-
-        return this._instance;
-    }
     // questList를 기반하여 모든 퀘스트를 user_quest Table에 넣어둔다.
     // TODO : 중간에 추가된 퀘스트에 대한 처리가 필요하다.
     public onNewUserCreated( userId:number ) : void 
     {
         console.log( "Quest.createUserQuestAll");
-        QuestStorage.getInstance().createUserQuestAll( userId, this.questMap );
+        QuestStorage.createUserQuestAll( userId, this.questMap );
     }
 
     public getQuestInfo( questIndex:number ){
@@ -80,13 +92,13 @@ export class Quest{
         switch( quest.reward_type )
         {
             case 1:// 다이아몬드
-                response = await QuestStorage.getInstance().rewardDiamond( userId, questId, questIndex, quest.fulfill_value, quest.reward_value );
+                response = await QuestStorage.rewardDiamond( userId, questId, questIndex, quest.fulfill_value, quest.reward_value );
                 break;
             case 2://골드
-                response = await QuestStorage.getInstance().rewardMoney( userId, questId, questIndex, quest.fulfill_value, quest.reward_value );
+                response = await QuestStorage.rewardMoney( userId, questId, questIndex, quest.fulfill_value, quest.reward_value );
                 break;
             case 3://아이템
-                response = await QuestStorage.getInstance().rewardItem( userId, questId, questIndex, quest.fulfill_value, quest.reward_value, quest.reward_subtype );
+                response = await QuestStorage.rewardItem( userId, questId, questIndex, quest.fulfill_value, quest.reward_value, quest.reward_subtype );
                 break;
             default:
                 console.log("Invalid reward Type : ", quest.reward_type );
@@ -101,37 +113,63 @@ export class Quest{
         if( response.success && quest.type === 0 && quest.next_quest > 0 )
         {
             //기존 퀘스트 삭제 && 다음 퀘스트 추가
-            response = await QuestStorage.getInstance().questDeleteNCreate( userId, questId, quest.next_quest, nextQuestType );
+            response = await QuestStorage.questDeleteNCreate( userId, questId, quest.next_quest, nextQuestType );
         }
         return response;
     }
 
     // 스테이지 클리어시 퀘스트 값 변경
     public processStageClear( userId:number, stageId:number ){
-        QuestStorage.getInstance().setUserQuestValue( userId, 3, stageId );
+        QuestStorage.setUserQuestValue( userId, 3, stageId );
     }
+
     // 다이아 소모시 퀘스트 값 변경
-    public processUseDiamond( userId:number, value:number )
-    {
-        QuestStorage.getInstance().addUserQuestValue( userId, 2, value );
+    public async processUseDiamond( userId:number, value:number ){
+        // QuestStorage.addUserQuestValue( userId, 2, value );
+        const isExist = await QuestCache.isExist( userId );
+        if( !isExist ){
+            const quests = await QuestStorage.getUserQuestList( userId );
+            await QuestCache.saveQuestInfo( userId, quests );
+        }
+
+        const questIndexList : number[] = [];
+        const questInfos = await QuestCache.getQuestList( userId );
+
+        for( let quest of questInfos ){
+            if( quest.fulfill_type === 2 ){
+                QuestStorage.addUserQuestValue( quest.id, userId, value );
+            }
+        }
     }
     
     //로그인시 퀘스트 값 변경
-    public processLogin( userId:number ) : void {
-        QuestStorage.getInstance().addUserQuestValue( userId, 1, 1 );
+    public async processLogin( userId:number ){
+        const isExist = await QuestCache.isExist( userId );
+        if( !isExist ){
+            const quests = await QuestStorage.getUserQuestList( userId );
+            await QuestCache.saveQuestInfo( userId, quests );
+        }
 
+        const questIndexList : number[] = [];
+        const questInfos = await QuestCache.getQuestList( userId );
+
+        for( let quest of questInfos ){
+            if( quest.fulfill_type === 1 ){
+                QuestStorage.addUserQuestValue( quest.id, userId, 1 );
+            }
+        }
     }
     
 
     async getUserNormalQuestInfo( userId:number ){
         console.log("Quest.getUserNormalQuestInfo : ", userId );
-        return await QuestStorage.getInstance().getUserQuestInfo( userId, 0 );
+        return await QuestStorage.getUserQuestInfo( userId, 0 );
     }
     // 유저의 정보를 DB로 부터 가져오고 만료된 퀘스트에 대하여 처리(RESET OR DELETE) 해준다.
     public async getUserWeeklyQuestInfo( userId:number ){
         console.log("Quest.getUserWeeklyQuestInfo : ", userId );
 
-        let result = await QuestStorage.getInstance().getUserQuestInfo( userId, 2 );
+        let result = await QuestStorage.getUserQuestInfo( userId, 2 );
 
         if( !result.success ){
             return result;
@@ -161,7 +199,7 @@ export class Quest{
                 element.expire_date = moment(newWeeklyExpireDate).tz('Asia/Seoul').format();;
                 element.complete = 0;
 
-                QuestStorage.getInstance().resetRepeatQuestInfo( element.id, userId, newWeeklyExpireDate )
+                QuestStorage.resetRepeatQuestInfo( element.id, userId, newWeeklyExpireDate )
             }
         });
         return result;
@@ -171,7 +209,7 @@ export class Quest{
     public async getUserDailyQuestInfo( userId:number ){
         console.log("Quest.getUserDailyQuestInfo : ", userId );
 
-        let result = await QuestStorage.getInstance().getUserQuestInfo( userId, 1 );
+        let result = await QuestStorage.getUserQuestInfo( userId, 1 );
 
         if( !result.success ){
             return result;
@@ -192,7 +230,7 @@ export class Quest{
                 element.expire_date = moment(newDailyExpireDate).tz('Asia/Seoul').format();
                 element.complete = 0;
 
-                QuestStorage.getInstance().resetRepeatQuestInfo( element.id, userId, newDailyExpireDate )
+                QuestStorage.resetRepeatQuestInfo( element.id, userId, newDailyExpireDate )
             }
         });
 
