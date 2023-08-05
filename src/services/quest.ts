@@ -110,17 +110,39 @@ export class Quest{
         console.log( `userId:${userId}, questId:${questId}, nextQuestIndex:${quest.next_quest}, nextQuestType:${nextQuestType}` );
         console.log( response.success );
         //보상 지급 완료 && 노말 타입 퀘스트 && next_quest가 설정 되어 있는 경우에만 연계 퀘스트를 자동으로 생성해 준다.
-        if( response.success && quest.type === 0 && quest.next_quest > 0 )
-        {
-            //기존 퀘스트 삭제 && 다음 퀘스트 추가
-            response = await QuestStorage.questDeleteNCreate( userId, questId, quest.next_quest, nextQuestType );
+        if( response.success && quest.type === 0 ){
+            
+            //캐쉬 삭제
+            QuestCache.delQuestInfo( userId, questId );
+
+            if( quest.next_quest > 0 ){
+                //기존 퀘스트 삭제 && 다음 퀘스트 추가
+                response = await QuestStorage.questDeleteNCreate( userId, questId, quest.next_quest, nextQuestType );
+                //TODO 캐쉬 추가
+                if( response.success ){
+                    
+                }
+            }
         }
         return response;
     }
 
     // 스테이지 클리어시 퀘스트 값 변경
-    public processStageClear( userId:number, stageId:number ){
-        QuestStorage.setUserQuestValue( userId, 3, stageId );
+    public async processStageClear( userId:number, stageId:number ){
+        // QuestStorage.setUserQuestValue( userId, 3, stageId );
+        const isExist = await QuestCache.isExist( userId );
+        if( !isExist ){
+            const quests = await QuestStorage.getUserQuestList( userId );
+            await QuestCache.setQuestList( userId, quests );
+        }
+
+        const questInfos = await QuestCache.getQuestList( userId );
+
+        for( let quest of questInfos ){
+            if( quest.fulfill_type === 3 ){
+                QuestStorage.setUserQuestValue( quest.id, userId, stageId );
+            }
+        }
     }
 
     // 다이아 소모시 퀘스트 값 변경
@@ -129,10 +151,9 @@ export class Quest{
         const isExist = await QuestCache.isExist( userId );
         if( !isExist ){
             const quests = await QuestStorage.getUserQuestList( userId );
-            await QuestCache.saveQuestInfo( userId, quests );
+            await QuestCache.setQuestList( userId, quests );
         }
 
-        const questIndexList : number[] = [];
         const questInfos = await QuestCache.getQuestList( userId );
 
         for( let quest of questInfos ){
@@ -147,10 +168,9 @@ export class Quest{
         const isExist = await QuestCache.isExist( userId );
         if( !isExist ){
             const quests = await QuestStorage.getUserQuestList( userId );
-            await QuestCache.saveQuestInfo( userId, quests );
+            await QuestCache.setQuestList( userId, quests );
         }
 
-        const questIndexList : number[] = [];
         const questInfos = await QuestCache.getQuestList( userId );
 
         for( let quest of questInfos ){

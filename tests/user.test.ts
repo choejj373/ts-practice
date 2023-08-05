@@ -82,8 +82,17 @@ describe("Sign up", ()=>{
     //     await QuestCache.getQuestIdsByIndex( 2, 3 );
     // })
  
-    test("quest process login", async ()=>{
+    test("Quest processLogin", async ()=>{
         await Quest.getInstance().processLogin( 71 );
     })
      
-})
+    test("QuestCache Del", async ()=>{
+        await QuestCache.delQuestInfo(71, 633 );
+    })
+
+    test("QuestCache Get Quest List", async ()=>{
+        await QuestCache.getQuestList( 71 );
+    })
+
+
+}) 

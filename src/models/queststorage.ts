@@ -238,14 +238,26 @@ export const QuestStorage =
         }
         return retVal;
     },
-    setUserQuestValue : async ( userId:number, fulfillType:number, fulfillValue:number ) =>
+    setUserQuestValue : async ( questId:number, userId:number, fulfillValue:number ) =>
     {
         const conn = await GetConnection();
 
         try{
-            // await conn.query("UPDATE user_quest SET value = value + ? WHERE owner = ? AND quest_index=?;", 
-            //         [addValue, userId, questIndex] );
+            await conn.query("UPDATE user_quest SET value = ? WHERE id = ? AND owner = ?;", 
+                    [ fulfillValue, questId, userId] );
 
+        }catch(err)
+        {
+            console.log(err);
+        }finally{
+            ReleaseConnection( conn );
+        }
+    },
+    setUserQuestValueByFulfillType : async ( userId:number, fulfillType:number, fulfillValue:number ) =>
+    {
+        const conn = await GetConnection();
+
+        try{
             await conn.query("UPDATE user_quest SET value = ? WHERE owner = ? AND quest_index IN ( select quest_list.id from quest_list where quest_list.fulfill_type = ?  AND quest_list.fulfill_value = ?);", 
                     [ fulfillValue, userId, fulfillType, fulfillValue] );
 
@@ -258,10 +270,6 @@ export const QuestStorage =
     },
     addUserQuestValue: async ( questId:number, userId:number, addValue:number ) =>
     {
-        console.log( questId );
-        console.log( userId );
-        console.log( addValue );
-
         const conn = await GetConnection();
 
         try{
@@ -282,9 +290,6 @@ export const QuestStorage =
         const conn = await GetConnection();
 
         try{
-            // await conn.query("UPDATE user_quest SET value = value + ? WHERE owner = ? AND quest_index=?;", 
-            //         [addValue, userId, questIndex] );
-
             await conn.query("UPDATE user_quest SET value = value + ? WHERE owner = ? AND quest_index IN ( select quest_list.id from quest_list where quest_list.fulfill_type = ? );", 
                     [addValue, userId, fulfillType] );
 
